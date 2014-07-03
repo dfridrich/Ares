@@ -1,4 +1,4 @@
-# DefrAresBundle
+# ARES
 
 Communication with ARES (Czech business register)
 

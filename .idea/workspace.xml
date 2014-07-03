@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b13335e6-98a3-49a6-8414-a30d59623aeb" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Ares.php" afterPath="$PROJECT_DIR$/src/Ares.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="Ares.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,14 +26,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Ares.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Ares.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Ares.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="295" column="60" selection-start="9677" selection-end="9677" vertical-scroll-proportion="-0.8855634" vertical-offset="6698" max-vertical-offset="7266">
+            <state line="295" column="60" selection-start="9677" selection-end="9677" vertical-scroll-proportion="18.62963" vertical-offset="6698" max-vertical-offset="7266">
               <folding>
                 <element signature="e#24#52#0" expanded="true" />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="6" selection-start="6" selection-end="6" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="777">
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="MarkdownPreviewEditor">
+            <state />
           </provider>
         </entry>
       </file>
@@ -50,6 +63,7 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/Ares.php" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -182,11 +196,21 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/Ares.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="295" column="60" selection-start="9677" selection-end="9677" vertical-scroll-proportion="-0.8855634" vertical-offset="6698" max-vertical-offset="7266">
+        <state line="295" column="60" selection-start="9677" selection-end="9677" vertical-scroll-proportion="18.62963" vertical-offset="6698" max-vertical-offset="7266">
           <folding>
             <element signature="e#24#52#0" expanded="true" />
           </folding>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="6" selection-start="6" selection-end="6" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="777">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
   </component>
