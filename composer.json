@@ -1,0 +1,23 @@
+{
+    "name": "dfridrich/ares",
+    "type": "library",
+    "description": "Communication with ARES (Czech business register)",
+    "keywords": ["php", "ares"],
+    "homepage": "https://github.com/dfridrich/DefrAresBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dennis Fridrich",
+            "email": "fridrich.dennis@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "dfridrich/library": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Defr\\": "src/"
+        }
+    }
+}
