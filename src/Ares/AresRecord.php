@@ -73,8 +73,10 @@ class AresRecord
     public function getStreetWithNumbers()
     {
         return $this->street . ' '
-        . ($this->streetOrientationNumber ?
-            $this->streetHouseNumber . '/' . $this->streetOrientationNumber :
+        . ($this->streetOrientationNumber
+            ?
+            $this->streetHouseNumber . '/' . $this->streetOrientationNumber
+            :
             $this->streetHouseNumber);
     }
 
@@ -92,6 +94,14 @@ class AresRecord
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->companyName;
     }
 
 }
