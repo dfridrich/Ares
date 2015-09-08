@@ -104,4 +104,68 @@ class AresRecord
         return $this->companyName;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTaxId()
+    {
+        return $this->taxId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStreetHouseNumber()
+    {
+        return $this->streetHouseNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStreetOrientationNumber()
+    {
+        return $this->streetOrientationNumber;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTown()
+    {
+        return $this->town;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
 }

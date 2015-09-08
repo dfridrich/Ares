@@ -33,11 +33,6 @@ class Ares
     /**
      * @var bool
      */
-    private $cacheEnabled = false;
-
-    /**
-     * @var bool
-     */
     private $debug;
 
     /**
@@ -47,14 +42,16 @@ class Ares
     public function __construct($cacheDir = null, $debug = false)
     {
 
-        if ($cacheDir != null) {
-            $this->cacheDir = $cacheDir . '/defr/ares';
-            $this->debug = $debug;
-            // Create cache dirs if they dont exist
-            if (!is_dir($this->cacheDir)) {
-                mkdir($this->cacheDir, 0777, true);
-            }
-            $this->cacheEnabled = true;
+        if ($cacheDir === null) {
+            $cacheDir = sys_get_temp_dir();
+        }
+
+        $this->cacheDir = $cacheDir . '/defr/ares';
+        $this->debug = $debug;
+
+        // Create cache dirs if they doesn't exist
+        if (!is_dir($this->cacheDir)) {
+            mkdir($this->cacheDir, 0777, true);
         }
 
     }
@@ -81,12 +78,12 @@ class Ares
         $cachedFile = $this->cacheDir . '/bas_' . $cachedFileName;
         $cachedRawFile = $this->cacheDir . '/bas_raw_' . $cachedFileName;
 
-        if (!is_file($cachedFile) || !$this->cacheEnabled) {
+        if (!is_file($cachedFile)) {
 
             try {
 
                 $aresRequest = file_get_contents($url);
-                if ($this->debug && $this->cacheEnabled) {
+                if ($this->debug) {
                     file_put_contents($cachedRawFile, $aresRequest);
                 }
                 $aresResponse = simplexml_load_string($aresRequest);
@@ -130,9 +127,7 @@ class Ares
                 throw new AresException($e->getMessage());
             }
 
-            if ($this->cacheEnabled) {
-                file_put_contents($cachedFile, serialize($record));
-            }
+            file_put_contents($cachedFile, serialize($record));
 
         } else {
 
@@ -167,10 +162,10 @@ class Ares
         $cachedFile = $this->cacheDir . '/res_' . $cachedFileName;
         $cachedRawFile = $this->cacheDir . '/res_raw_' . $cachedFileName;
 
-        if (!is_file($cachedFile) || !$this->cacheEnabled) {
+        if (!is_file($cachedFile)) {
             try {
                 $aresRequest = file_get_contents($url);
-                if ($this->debug && $this->cacheEnabled) {
+                if ($this->debug) {
                     file_put_contents($cachedRawFile, $aresRequest);
                 }
                 $aresResponse = simplexml_load_string($aresRequest);
@@ -199,9 +194,7 @@ class Ares
             } catch (\Exception $e) {
                 throw new AresException($e->getMessage());
             }
-            if ($this->cacheEnabled) {
-                file_put_contents($cachedFile, serialize($record));
-            }
+            file_put_contents($cachedFile, serialize($record));
         } else {
             /** @var AresRecord $record */
             $record = unserialize(file_get_contents($cachedFile));
@@ -233,10 +226,10 @@ class Ares
         $cachedFile = $this->cacheDir . '/tax_' . $cachedFileName;
         $cachedRawFile = $this->cacheDir . '/tax_raw_' . $cachedFileName;
 
-        if (!is_file($cachedFile) || !$this->cacheEnabled) {
+        if (!is_file($cachedFile)) {
             try {
                 $vatRequest = file_get_contents($url);
-                if ($this->debug && $this->cacheEnabled) {
+                if ($this->debug) {
                     file_put_contents($cachedRawFile, $vatRequest);
                 }
                 $vatResponse = simplexml_load_string($vatRequest);
@@ -258,9 +251,7 @@ class Ares
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage());
             }
-            if ($this->cacheEnabled) {
-                file_put_contents($cachedFile, serialize($record));
-            }
+            file_put_contents($cachedFile, serialize($record));
         } else {
             $record = unserialize(file_get_contents($cachedFile));
         }
@@ -293,10 +284,10 @@ class Ares
         $cachedFile = $this->cacheDir . '/find_' . $cachedFileName;
         $cachedRawFile = $this->cacheDir . '/find_raw_' . $cachedFileName;
 
-        if (!is_file($cachedFile) || !$this->cacheEnabled) {
+        if (!is_file($cachedFile)) {
             try {
                 $aresRequest = file_get_contents($url);
-                if ($this->debug && $this->cacheEnabled) {
+                if ($this->debug) {
                     file_put_contents($cachedRawFile, $aresRequest);
                 }
                 $aresResponse = simplexml_load_string($aresRequest);
@@ -327,15 +318,29 @@ class Ares
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage());
             }
-            if ($this->cacheEnabled) {
-                file_put_contents($cachedFile, serialize($records));
-            }
+            file_put_contents($cachedFile, serialize($records));
         } else {
             $records = unserialize(file_get_contents($cachedFile));
         }
 
         return $records;
 
+    }
+
+    /**
+     * @param string $cacheStrategy
+     */
+    public function setCacheStrategy($cacheStrategy)
+    {
+        $this->cacheStrategy = $cacheStrategy;
+    }
+
+    /**
+     * @param boolean $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
     }
 
 }
