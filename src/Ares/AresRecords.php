@@ -3,16 +3,15 @@
 namespace Defr\Ares;
 
 /**
- * Class AresRecords
- * @package Defr\Ares
+ * Class AresRecords.
+ *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
 class AresRecords implements \ArrayAccess, \IteratorAggregate
 {
+    public $array = array();
 
-    public $array = Array();
-
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
         if (isset($this->array[$offset])) {
             return true;
@@ -23,9 +22,10 @@ class AresRecords implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param mixed $offset
+     *
      * @return bool|AresRecord
      */
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
             return $this->array[$offset];
@@ -34,7 +34,7 @@ class AresRecords implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
     {
         if ($offset) {
             $this->array[$offset] = $value;
@@ -43,14 +43,13 @@ class AresRecords implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
         unset($this->array[$offset]);
     }
 
-    function getIterator()
+    public function getIterator()
     {
         return new \ArrayIterator($this->array);
     }
-
 }

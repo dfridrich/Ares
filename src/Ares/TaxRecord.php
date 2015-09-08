@@ -3,13 +3,12 @@
 namespace Defr\Ares;
 
 /**
- * Class TaxRecord
- * @package Defr\Ares
+ * Class TaxRecord.
+ *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
 class TaxRecord
 {
-
     public $taxId = null;
 
     /**
@@ -27,5 +26,4 @@ class TaxRecord
     {
         return strval($this->taxId);
     }
-
 }
