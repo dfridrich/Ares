@@ -3,13 +3,12 @@
 namespace Defr\Ares;
 
 /**
- * Class AresRecord
- * @package Defr\Ares
+ * Class AresRecord.
+ *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
 class AresRecord
 {
-
     public $companyId;
     public $taxId;
     public $companyName;
@@ -72,10 +71,10 @@ class AresRecord
      */
     public function getStreetWithNumbers()
     {
-        return $this->street . ' '
-        . ($this->streetOrientationNumber
+        return $this->street.' '
+        .($this->streetOrientationNumber
             ?
-            $this->streetHouseNumber . '/' . $this->streetOrientationNumber
+            $this->streetHouseNumber.'/'.$this->streetOrientationNumber
             :
             $this->streetHouseNumber);
     }
@@ -167,5 +166,4 @@ class AresRecord
     {
         return $this->zip;
     }
-
 }

@@ -8,13 +8,12 @@ use Defr\Ares\AresRecords;
 use Defr\Ares\TaxRecord;
 
 /**
- * Class Ares
- * @package Defr
+ * Class Ares.
+ *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
 class Ares
 {
-
     const URL_BAS = 'http://wwwinfo.mfcr.cz/cgi-bin/ares/darv_bas.cgi?ico=%s';
     const URL_RES = 'http://wwwinfo.mfcr.cz/cgi-bin/ares/darv_res.cgi?ICO=%s';
     const URL_TAX = 'http://wwwinfo.mfcr.cz/cgi-bin/ares/ares_es.cgi?ico=%s';
@@ -41,30 +40,29 @@ class Ares
      */
     public function __construct($cacheDir = null, $debug = false)
     {
-
         if ($cacheDir === null) {
             $cacheDir = sys_get_temp_dir();
         }
 
-        $this->cacheDir = $cacheDir . '/defr/ares';
+        $this->cacheDir = $cacheDir.'/defr/ares';
         $this->debug = $debug;
 
         // Create cache dirs if they doesn't exist
         if (!is_dir($this->cacheDir)) {
             mkdir($this->cacheDir, 0777, true);
         }
-
     }
 
     /**
      * @param $id
+     *
      * @return AresRecord
+     *
      * @throws \InvalidArgumentException
      * @throws Ares\AresException
      */
     public function findByIdentificationNumber($id)
     {
-
         $id = Lib::toInteger($id);
 
         if (!is_int($id)) {
@@ -74,14 +72,12 @@ class Ares
         // Sestaveni URL
         $url = sprintf(self::URL_BAS, $id);
 
-        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
-        $cachedFile = $this->cacheDir . '/bas_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/bas_raw_' . $cachedFileName;
+        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
+        $cachedFile = $this->cacheDir.'/bas_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/bas_raw_'.$cachedFileName;
 
         if (!is_file($cachedFile)) {
-
             try {
-
                 $aresRequest = file_get_contents($url);
                 if ($this->debug) {
                     file_put_contents($cachedRawFile, $aresRequest);
@@ -94,7 +90,6 @@ class Ares
                     $elements = $data->children($ns['D'])->VBAS;
 
                     if (strval($elements->ICO) == $id) {
-
                         $record = new AresRecord();
 
                         $record->setCompanyId($id);
@@ -110,13 +105,12 @@ class Ares
                         }
 
                         if (strval($elements->AA->NCO)) {
-                            $record->setTown(strval($elements->AA->N . ' - ' . strval($elements->AA->NCO)));
+                            $record->setTown(strval($elements->AA->N.' - '.strval($elements->AA->NCO)));
                         } else {
                             $record->setTown(strval($elements->AA->N));
                         }
 
                         $record->setZip(strval($elements->AA->PSC));
-
                     } else {
                         throw new AresException('IČ firmy nebylo nalezeno.');
                     }
@@ -128,27 +122,25 @@ class Ares
             }
 
             file_put_contents($cachedFile, serialize($record));
-
         } else {
 
             /** @var AresRecord $record */
             $record = unserialize(file_get_contents($cachedFile));
-
         }
 
         return $record;
-
     }
 
     /**
      * @param $id
+     *
      * @return AresRecord
+     *
      * @throws \InvalidArgumentException
      * @throws Ares\AresException
      */
     public function findInResById($id)
     {
-
         $id = Lib::toInteger($id);
 
         if (!is_int($id)) {
@@ -158,9 +150,9 @@ class Ares
         // Sestaveni URL
         $url = sprintf(self::URL_RES, $id);
 
-        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
-        $cachedFile = $this->cacheDir . '/res_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/res_raw_' . $cachedFileName;
+        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
+        $cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/res_raw_'.$cachedFileName;
 
         if (!is_file($cachedFile)) {
             try {
@@ -201,18 +193,18 @@ class Ares
         }
 
         return $record;
-
     }
 
     /**
      * @param $id
+     *
      * @return TaxRecord|mixed
+     *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function findVatById($id)
     {
-
         $id = Lib::toInteger($id);
 
         if (!is_int($id)) {
@@ -222,9 +214,9 @@ class Ares
         // Sestaveni URL
         $url = sprintf(self::URL_TAX, $id);
 
-        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
-        $cachedFile = $this->cacheDir . '/tax_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/tax_raw_' . $cachedFileName;
+        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
+        $cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/tax_raw_'.$cachedFileName;
 
         if (!is_file($cachedFile)) {
             try {
@@ -257,19 +249,19 @@ class Ares
         }
 
         return $record;
-
     }
 
     /**
      * @param $name
      * @param null $city
+     *
      * @return array|AresRecords
+     *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function findByName($name, $city = null)
     {
-
         if (strlen($name) < 3) {
             throw new \InvalidArgumentException('Zadejte minimálně tři znaky pro hledání.');
         }
@@ -280,9 +272,9 @@ class Ares
             urlencode(Lib::stripDiacritics($city))
         );
 
-        $cachedFileName = date($this->cacheStrategy) . '_' . md5($name . $city) . '.php';
-        $cachedFile = $this->cacheDir . '/find_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/find_raw_' . $cachedFileName;
+        $cachedFileName = date($this->cacheStrategy).'_'.md5($name.$city).'.php';
+        $cachedFile = $this->cacheDir.'/find_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/find_raw_'.$cachedFileName;
 
         if (!is_file($cachedFile)) {
             try {
@@ -324,7 +316,6 @@ class Ares
         }
 
         return $records;
-
     }
 
     /**
@@ -336,11 +327,10 @@ class Ares
     }
 
     /**
-     * @param boolean $debug
+     * @param bool $debug
      */
     public function setDebug($debug)
     {
         $this->debug = $debug;
     }
-
 }
