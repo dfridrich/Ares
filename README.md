@@ -1,4 +1,5 @@
-# ARES
+ARES [![Build Status](https://travis-ci.org/dfridrich/Ares.svg)](https://travis-ci.org/dfridrich/Ares)
+====
 
 Communication with ARES (Czech business register).
 
