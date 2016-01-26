@@ -21,8 +21,14 @@ final class AresTest extends PHPUnit_Framework_TestCase
     {
         $record = $this->ares->findByIdentificationNumber(73263753);
 
-        $this->assertEquals('Dennis Fridrich', $record->getCompanyName());
-        $this->assertEquals('CZ8508095453', $record->getTaxId());
+        $this->assertSame('Dennis Fridrich', $record->getCompanyName());
+        $this->assertSame('CZ8508095453', $record->getTaxId());
+        $this->assertSame(73263753, $record->getCompanyId());
+        $this->assertSame('Herodova', $record->getStreet());
+        $this->assertSame('1871', $record->getStreetHouseNumber());
+        $this->assertSame('4', $record->getStreetOrientationNumber());
+        $this->assertSame('Ostrava - Moravská Ostrava', $record->getTown());
+        $this->assertSame('70200', $record->getZip());
     }
 
     /**
@@ -33,11 +39,11 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->ares->findByIdentificationNumber('A1234');
     }
 
-//    public function testGetCompanyPeople()
-//    {
-//        $record = $this->ares->findByIdentificationNumber(27791394); // SevenDesign IČ
-//
-//        $companyPeople = $record->getCompanyPeople();
-//        $this->assertCount(2, $companyPeople);
-//    }
+    public function testGetCompanyPeople()
+    {
+        $record = $this->ares->findByIdentificationNumber(27791394);
+
+        $companyPeople = $record->getCompanyPeople();
+        $this->assertCount(2, $companyPeople);
+    }
 }
