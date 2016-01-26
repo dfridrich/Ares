@@ -2,6 +2,9 @@
 
 namespace Defr\Ares;
 
+use Defr\Justice;
+use Goutte\Client;
+
 /**
  * Class AresRecord.
  *
@@ -165,5 +168,19 @@ class AresRecord
     public function getZip()
     {
         return $this->zip;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompanyPeople()
+    {
+        $justice = new Justice(new Client());
+        $justiceRecord = $justice->findById($this->companyId);
+        if ($justiceRecord) {
+            return $justiceRecord->getPeople();
+        }
+
+        return [];
     }
 }
