@@ -5,12 +5,9 @@ namespace Defr;
 use Assert\Assertion;
 use Defr\Justice\JusticeRecord;
 use Defr\Justice\SubjectNotFoundException;
-use Defr\Parser\DateTimeParser;
 use Defr\Parser\JusticeJednatelPersonParser;
 use Defr\Parser\JusticeSpolecnikPersonParser;
-use Defr\ValueObject\Person;
 use Goutte\Client;
-use Nette\Utils\DateTime;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class Justice
