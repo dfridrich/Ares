@@ -88,22 +88,4 @@ final class Justice
 
         return self::URL_BASE.$href[1];
     }
-
-//    /**
-//     * @return Person
-//     */
-//    private function parseJednatel(Crawler $table)
-//    {
-//        $content = $table->filter('.div-cell div div')->text();
-//        $content = $this->removeEmptyLines($content);
-//
-//        $contentItems = explode(PHP_EOL, $content);
-//        $name = trim(explode(',', $contentItems[0])[0]);
-//        $birthday = DateTimeParser::parseFromCzechDateString($contentItems[1]);
-//        $address = trim($contentItems[2]);
-//
-//        return new Person($name, $birthday, $address);
-//    }
-
-
 }
