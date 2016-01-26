@@ -7,10 +7,20 @@ Installation with [Composer](https://getcomposer.org/)
 -----------------------------------------------------
 
 ``` sh
-php composer require dfridrich/ares:v1.*
+php composer require dfridrich/ares
 ```
 
 Usage
 -----
 
-TODO. See files :-)
+```php
+require "../vendor/autoload.php";
+
+use Defr\Ares;
+
+$ares = new Ares();
+
+$record = $ares->findByIdentificationNumber(73263753); // instance of AresRecord
+
+$people = $record->getCompanyPeople(); // array of Person
+```
