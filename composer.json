@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": "^5.4|^7.0",
         "beberlei/assert": "^2.4",
         "dfridrich/library": "^1.0",
-        "fabpot/goutte": "^3.1"
+        "fabpot/goutte": "^2.0"
     },
     "require-dev": {
         "symplify/coding-standard": "^0.1"
