@@ -1,7 +1,7 @@
 ARES [![Build Status](https://travis-ci.org/dfridrich/Ares.svg)](https://travis-ci.org/dfridrich/Ares)
 ====
 
-Communication with ARES (Czech business register).
+Communication with ARES & Justice (Czech business registers).
 
 Installation with [Composer](https://getcomposer.org/)
 -----------------------------------------------------
@@ -14,7 +14,7 @@ Usage
 -----
 
 ```php
-require "../vendor/autoload.php";
+require __DIR__.'/vendor/autoload.php';
 
 use Defr\Ares;
 
