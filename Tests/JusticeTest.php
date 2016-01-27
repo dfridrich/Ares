@@ -22,6 +22,10 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
 
     public function testFindById()
     {
+        if (!$this->isJusticeOn()) {
+            $this->markTestSkipped('Justice is down.');
+        }
+
         $justiceRecord = $this->justice->findById(27791394);
         $this->assertInstanceOf(JusticeRecord::class, $justiceRecord);
 
@@ -36,7 +40,24 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
 
     public function testNotFoundFindId()
     {
+        if (!$this->isJusticeOn()) {
+            $this->markTestSkipped('Justice is down.');
+        }
+
         $justiceRecord = $this->justice->findById(123456);
         $this->assertFalse($justiceRecord);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isJusticeOn()
+    {
+        try {
+            (new Client())->request('GET', 'http://or.justice.cz');
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 }
