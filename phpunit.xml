@@ -5,14 +5,8 @@
          verbose="true">
 
     <testsuites>
-        <testsuite name="dfridrich/PhpMimeType test suite">
-            <directory suffix="Test.php">./Tests</directory>
+        <testsuite>
+            <directory>Tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./src</directory>
-        </whitelist>
-    </filter>
 </phpunit>

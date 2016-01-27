@@ -7,9 +7,15 @@ php:
   - 7.0
   - hhvm
 
+matrix:
+  include:
+    - php: 7.0
+      env: CHECK_CS=true
+
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
 
 script:
   - phpunit
+  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src Tests; fi

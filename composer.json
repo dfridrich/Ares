@@ -13,7 +13,12 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "dfridrich/library": "1.*"
+        "beberlei/assert": "^2.4",
+        "dfridrich/library": "^1.0",
+        "fabpot/goutte": "^3.1"
+    },
+    "require-dev": {
+        "symplify/coding-standard": "^0.1"
     },
     "autoload": {
         "psr-4": {

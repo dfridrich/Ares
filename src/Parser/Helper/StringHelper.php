@@ -6,6 +6,7 @@ final class StringHelper
 {
     /**
      * @param string $text
+     *
      * @return string
      */
     public static function removeEmptyLines($text)
