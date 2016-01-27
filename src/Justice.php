@@ -35,9 +35,9 @@ final class Justice
     /**
      * @param int $id
      *
-     * @return JusticeRecord|false
-     *
      * @throws SubjectNotFoundException
+     *
+     * @return JusticeRecord|false
      */
     public function findById($id)
     {

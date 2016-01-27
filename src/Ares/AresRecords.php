@@ -7,9 +7,9 @@ namespace Defr\Ares;
  *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
-class AresRecords implements \ArrayAccess, \IteratorAggregate
+final class AresRecords implements \ArrayAccess, \IteratorAggregate
 {
-    public $array = array();
+    public $array = [];
 
     public function offsetExists($offset)
     {

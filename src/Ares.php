@@ -56,10 +56,10 @@ class Ares
     /**
      * @param $id
      *
-     * @return AresRecord
-     *
      * @throws \InvalidArgumentException
      * @throws Ares\AresException
+     *
+     * @return AresRecord
      */
     public function findByIdentificationNumber($id)
     {
@@ -89,7 +89,7 @@ class Ares
                     $data = $aresResponse->children($ns['are']);
                     $elements = $data->children($ns['D'])->VBAS;
 
-                    if (strval($elements->ICO) == $id) {
+                    if (strval($elements->ICO) === $id) {
                         $record = new AresRecord();
 
                         $record->setCompanyId($id);
@@ -134,10 +134,10 @@ class Ares
     /**
      * @param $id
      *
-     * @return AresRecord
-     *
      * @throws \InvalidArgumentException
      * @throws Ares\AresException
+     *
+     * @return AresRecord
      */
     public function findInResById($id)
     {
@@ -167,7 +167,7 @@ class Ares
                     $data = $aresResponse->children($ns['are']);
                     $elements = $data->children($ns['D'])->Vypis_RES;
 
-                    if (strval($elements->ZAU->ICO) == $id) {
+                    if (strval($elements->ZAU->ICO) === $id) {
                         $record = new AresRecord();
                         $record->setCompanyId(strval($id));
                         $record->setTaxId($this->findVatById($id));
@@ -198,10 +198,10 @@ class Ares
     /**
      * @param $id
      *
-     * @return TaxRecord|mixed
-     *
      * @throws \InvalidArgumentException
      * @throws \Exception
+     *
+     * @return TaxRecord|mixed
      */
     public function findVatById($id)
     {
@@ -232,7 +232,7 @@ class Ares
                     $data = $vatResponse->children($ns['are']);
                     $elements = $data->children($ns['dtt'])->V->S;
 
-                    if (strval($elements->ico) == $id) {
+                    if (strval($elements->ico) === $id) {
                         $record->setTaxId(str_replace('dic=', 'CZ', strval($elements->p_dph)));
                     } else {
                         throw new AresException('DIČ firmy nebylo nalezeno.');
@@ -255,10 +255,10 @@ class Ares
      * @param $name
      * @param null $city
      *
-     * @return array|AresRecords
-     *
      * @throws \InvalidArgumentException
      * @throws \Exception
+     *
+     * @return array|AresRecords
      */
     public function findByName($name, $city = null)
     {

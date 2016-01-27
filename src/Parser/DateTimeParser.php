@@ -22,7 +22,7 @@ final class DateTimeParser
         'září' => 'September',
         'října' => 'October',
         'listopadu' => 'November',
-        'prosince' => 'December'
+        'prosince' => 'December',
     ];
 
     /**

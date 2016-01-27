@@ -55,6 +55,7 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
     {
         try {
             (new Client())->request('GET', 'http://or.justice.cz');
+
             return true;
         } catch (\Exception $exception) {
             return false;
