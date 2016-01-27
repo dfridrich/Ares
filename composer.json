@@ -17,9 +17,6 @@
         "dfridrich/library": "^1.0",
         "fabpot/goutte": "^2.0"
     },
-    "require-dev": {
-        "symplify/coding-standard": "^0.1"
-    },
     "autoload": {
         "psr-4": {
             "Defr\\": "src/"

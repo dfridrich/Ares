@@ -15,6 +15,7 @@ matrix:
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
+  - if [[ "$CHECK_CS" != "" ]]; then composer require symplify/coding-standard; fi
 
 script:
   - phpunit
