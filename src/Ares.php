@@ -277,38 +277,33 @@ class Ares
         $cachedRawFile = $this->cacheDir.'/find_raw_'.$cachedFileName;
 
         if (!is_file($cachedFile)) {
-            try {
-                $aresRequest = file_get_contents($url);
-                if ($this->debug) {
-                    file_put_contents($cachedRawFile, $aresRequest);
-                }
-                $aresResponse = simplexml_load_string($aresRequest);
+            $aresRequest = file_get_contents($url);
+            if ($this->debug) {
+                file_put_contents($cachedRawFile, $aresRequest);
+            }
+            $aresResponse = simplexml_load_string($aresRequest);
+            if (!$aresResponse) {
+                throw new AresException('Databáze ARES není dostupná.');
+            }
 
-                if ($aresResponse) {
-                    $ns = $aresResponse->getDocNamespaces();
-                    $data = $aresResponse->children($ns['are']);
-                    $elements = $data->children($ns['dtt'])->V->S;
+            $ns = $aresResponse->getDocNamespaces();
+            $data = $aresResponse->children($ns['are']);
+            $elements = $data->children($ns['dtt'])->V->S;
 
-                    if (!count($elements)) {
-                        throw new AresException('Nic nebylo nalezeno.');
-                    } else {
-                        $records = new AresRecords();
-                        foreach ($elements as $element) {
-                            $record = new AresRecord();
-                            $record->setCompanyId(strval($element->ico));
-                            $record->setTaxId(
-                                ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : '')
-                            );
-                            $record->setCompanyName(strval($element->ojm));
-                            //'adresa' => strval($element->jmn));
-                            $records[] = $record;
-                        }
-                    }
-                } else {
-                    throw new AresException('Databáze ARES není dostupná.');
+            if (!count($elements)) {
+                throw new AresException('Nic nebylo nalezeno.');
+            } else {
+                $records = new AresRecords();
+                foreach ($elements as $element) {
+                    $record = new AresRecord();
+                    $record->setCompanyId(strval($element->ico));
+                    $record->setTaxId(
+                        ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : '')
+                    );
+                    $record->setCompanyName(strval($element->ojm));
+                    //'adresa' => strval($element->jmn));
+                    $records[] = $record;
                 }
-            } catch (\Exception $e) {
-                throw new \Exception($e->getMessage());
             }
             file_put_contents($cachedFile, serialize($records));
         } else {
