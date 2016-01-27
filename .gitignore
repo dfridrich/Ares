@@ -1,5 +1,2 @@
-composer.phar
+/vendor
 composer.lock
-vendor/
-.git/
-.idea/
