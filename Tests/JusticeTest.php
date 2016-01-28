@@ -53,7 +53,8 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
     private function isJusticeOn()
     {
         try {
-            (new Client())->request('GET', 'http://or.justice.cz');
+            $crawler = (new Client())->request('GET', 'http://or.justice.cz');
+            var_dump($crawler);
 
             return true;
         } catch (\Exception $exception) {
