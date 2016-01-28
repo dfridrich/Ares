@@ -12,13 +12,44 @@ use Goutte\Client;
  */
 class AresRecord
 {
+    /**
+     * @var int
+     */
     public $companyId;
+
+    /**
+     * @var string
+     */
     public $taxId;
+
+    /**
+     * @var string
+     */
     public $companyName;
+
+    /**
+     * @var string
+     */
     public $street;
+
+    /**
+     * @var string
+     */
     public $streetHouseNumber;
+
+    /**
+     * @var string
+     */
     public $streetOrientationNumber;
+
+    /**
+     * @var string
+     */
     public $town;
+
+    /**
+     * @var string
+     */
     public $zip;
 
     /**

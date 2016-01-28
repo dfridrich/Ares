@@ -9,10 +9,13 @@ namespace Defr\Ares;
  */
 class TaxRecord
 {
+    /**
+     * @var string
+     */
     public $taxId = null;
 
     /**
-     * @param $taxId
+     * @param string $taxId
      */
     public function setTaxId($taxId)
     {

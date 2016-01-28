@@ -1,6 +1,7 @@
 <?php
 
 namespace Defr\Ares;
+use ArrayIterator;
 
 /**
  * Class AresRecords.
@@ -9,8 +10,16 @@ namespace Defr\Ares;
  */
 final class AresRecords implements \ArrayAccess, \IteratorAggregate
 {
+    /**
+     * @var AresRecord[]
+     */
     public $array = [];
 
+    /**
+     * @param mixed $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         if (isset($this->array[$offset])) {
@@ -34,6 +43,10 @@ final class AresRecords implements \ArrayAccess, \IteratorAggregate
         }
     }
 
+    /**
+     * @param mixed $offset
+     * @param AresRecord $value
+     */
     public function offsetSet($offset, $value)
     {
         if ($offset) {
@@ -43,13 +56,19 @@ final class AresRecords implements \ArrayAccess, \IteratorAggregate
         }
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         unset($this->array[$offset]);
     }
 
+    /**
+     * @return ArrayIterator
+     */
     public function getIterator()
     {
-        return new \ArrayIterator($this->array);
+        return new ArrayIterator($this->array);
     }
 }
