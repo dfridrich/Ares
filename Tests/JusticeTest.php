@@ -54,7 +54,7 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
     {
         try {
             $crawler = (new Client())->request('GET', 'http://or.justice.cz');
-            var_dump($crawler);
+            var_dump($crawler->text());
 
             return true;
         } catch (\Exception $exception) {
