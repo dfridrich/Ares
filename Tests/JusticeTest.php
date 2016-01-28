@@ -3,7 +3,6 @@
 namespace Defr\Tests;
 
 use Defr\Justice;
-use Defr\Justice\JusticeRecord;
 use Goutte\Client;
 use PHPUnit_Framework_TestCase;
 
@@ -16,15 +15,15 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        if ($this->isTravis()) {
+            $this->markTestSkipped('Travis cannot connect to Justice.cz');
+        }
+
         $this->justice = new Justice(new Client());
     }
 
     public function testFindById()
     {
-        if (!$this->isJusticeOn()) {
-            $this->markTestSkipped('Justice is down.');
-        }
-
         $justiceRecord = $this->justice->findById(27791394);
         $this->assertInstanceOf('Defr\Justice\JusticeRecord', $justiceRecord);
 
@@ -39,10 +38,6 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
 
     public function testNotFoundFindId()
     {
-        if (!$this->isJusticeOn()) {
-            $this->markTestSkipped('Justice is down.');
-        }
-
         $justiceRecord = $this->justice->findById(123456);
         $this->assertFalse($justiceRecord);
     }
@@ -50,15 +45,12 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
     /**
      * @return bool
      */
-    private function isJusticeOn()
+    private function isTravis()
     {
-        try {
-            $crawler = (new Client())->request('GET', 'http://or.justice.cz');
-            var_dump($crawler->text());
-
+        if (getenv('TRAVIS_PHP_VERSION')) {
             return true;
-        } catch (\Exception $exception) {
-            return false;
         }
+
+        return false;
     }
 }

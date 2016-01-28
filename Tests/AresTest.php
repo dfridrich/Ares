@@ -3,7 +3,6 @@
 namespace Defr\Ares\Tests;
 
 use Defr\Ares;
-use Goutte\Client;
 use PHPUnit_Framework_TestCase;
 
 final class AresTest extends PHPUnit_Framework_TestCase
@@ -42,8 +41,8 @@ final class AresTest extends PHPUnit_Framework_TestCase
 
     public function testGetCompanyPeople()
     {
-        if (!$this->isJusticeOn()) {
-            $this->markTestSkipped('Justice is down.');
+        if ($this->isTravis()) {
+            $this->markTestSkipped('Travis cannot connect to Justice.cz');
         }
 
         $record = $this->ares->findByIdentificationNumber(27791394);
@@ -55,14 +54,12 @@ final class AresTest extends PHPUnit_Framework_TestCase
     /**
      * @return bool
      */
-    private function isJusticeOn()
+    private function isTravis()
     {
-        try {
-            (new Client())->request('GET', 'http://or.justice.cz');
-
+        if (getenv('TRAVIS_PHP_VERSION')) {
             return true;
-        } catch (\Exception $exception) {
-            return false;
         }
+
+        return false;
     }
 }
