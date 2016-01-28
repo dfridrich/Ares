@@ -89,7 +89,8 @@ class Ares
                     $data = $aresResponse->children($ns['are']);
                     $elements = $data->children($ns['D'])->VBAS;
 
-                    if (strval($elements->ICO) === $id) {
+                    $ico = (int) $elements->ICO;
+                    if ($ico === $id) {
                         $record = new AresRecord();
 
                         $record->setCompanyId($id);

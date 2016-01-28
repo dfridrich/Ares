@@ -2,7 +2,6 @@
 
 namespace Defr\Tests;
 
-use DateTimeInterface;
 use Defr\Justice;
 use Defr\Justice\JusticeRecord;
 use Goutte\Client;
@@ -27,14 +26,14 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
         }
 
         $justiceRecord = $this->justice->findById(27791394);
-        $this->assertInstanceOf(JusticeRecord::class, $justiceRecord);
+        $this->assertInstanceOf('Defr\Justice\JusticeRecord', $justiceRecord);
 
         $people = $justiceRecord->getPeople();
         $this->assertCount(2, $people);
 
         $this->assertArrayHasKey('Mgr. ROBERT RUNTÁK', $people);
         $person = $people['Mgr. ROBERT RUNTÁK'];
-        $this->assertInstanceOf(DateTimeInterface::class, $person->getBirthday());
+        $this->assertInstanceOf('DateTime', $person->getBirthday());
         $this->assertInternalType('string', $person->getAddress());
     }
 
