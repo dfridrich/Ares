@@ -1,6 +1,6 @@
 <?php
 
-require "../vendor/autoload.php";
+require __DIR__.'/../vendor/autoload.php';
 
 use Defr\Ares;
 
@@ -9,7 +9,7 @@ $ares = new Ares();
 $record = $ares->findByIdentificationNumber(73263753);
 
 echo sprintf(
-    '%s, %s, %s, %s, IÈ %s, DIÈ %s',
+    '%s, %s, %s, %s, IÄŒ %s, DIÄŒ %s',
     $record->getCompanyName(),
     $record->getStreet(),
     $record->getZip(),

@@ -4,17 +4,18 @@ php:
   - 5.4
   - 5.5
   - 5.6
-  - 7.0
   - hhvm
 
 matrix:
-  allow_failures:
+  include:
     - php: 7.0
-    - php: hhvm
+      env: CHECK_CS=true
 
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
+  - if [[ "$CHECK_CS" != "" ]]; then composer require symplify/coding-standard; fi
 
 script:
   - phpunit
+  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src Tests; fi
