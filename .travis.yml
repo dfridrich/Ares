@@ -9,7 +9,7 @@ php:
 matrix:
   include:
     - php: 7.0
-      env: CHECK_CS=true
+      env: PHPUNIT_FLAGS="--coverage-clover coverage.clover" CHECK_CS=true
 
 before_script:
   - composer self-update
@@ -17,5 +17,8 @@ before_script:
   - if [[ "$CHECK_CS" != "" ]]; then composer require symplify/coding-standard; fi
 
 script:
-  - phpunit
+  - phpunit $PHPUNIT_FLAGS
   - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src Tests; fi
+
+after_script:
+  - if [[ "$PHPUNIT_FLAGS" != "" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
