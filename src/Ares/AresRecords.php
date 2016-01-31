@@ -1,6 +1,7 @@
 <?php
 
 namespace Defr\Ares;
+
 use ArrayIterator;
 
 /**
