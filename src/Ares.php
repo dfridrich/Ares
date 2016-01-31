@@ -36,6 +36,16 @@ class Ares
     private $debug;
 
     /**
+     * @var array
+     */
+    private $contextOptions = array(
+        "ssl" => array(
+            "verify_peer"      => false,
+            "verify_peer_name" => false,
+        ),
+    );
+
+    /**
      * @param null $cacheDir
      * @param bool $debug
      */
@@ -45,7 +55,7 @@ class Ares
             $cacheDir = sys_get_temp_dir();
         }
 
-        $this->cacheDir = $cacheDir.'/defr/ares';
+        $this->cacheDir = $cacheDir . '/defr/ares';
         $this->debug = $debug;
 
         // Create cache dirs if they doesn't exist
@@ -67,9 +77,9 @@ class Ares
         $id = Lib::toInteger($id);
         $this->ensureIdIsInteger($id);
 
-        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-        $cachedFile = $this->cacheDir.'/bas_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/bas_raw_'.$cachedFileName;
+        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
+        $cachedFile = $this->cacheDir . '/bas_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/bas_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -79,7 +89,7 @@ class Ares
         $url = sprintf(self::URL_BAS, $id);
 
         try {
-            $aresRequest = file_get_contents($url);
+            $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $aresRequest);
             }
@@ -90,7 +100,7 @@ class Ares
                 $data = $aresResponse->children($ns['are']);
                 $elements = $data->children($ns['D'])->VBAS;
 
-                $ico = (int) $elements->ICO;
+                $ico = (int)$elements->ICO;
                 if ($ico !== $id) {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
@@ -110,7 +120,7 @@ class Ares
                 }
 
                 if (strval($elements->AA->NCO)) {
-                    $record->setTown(strval($elements->AA->N.' - '.strval($elements->AA->NCO)));
+                    $record->setTown(strval($elements->AA->N . ' - ' . strval($elements->AA->NCO)));
                 } else {
                     $record->setTown(strval($elements->AA->N));
                 }
@@ -144,16 +154,16 @@ class Ares
         // Sestaveni URL
         $url = sprintf(self::URL_RES, $id);
 
-        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-        $cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/res_raw_'.$cachedFileName;
+        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
+        $cachedFile = $this->cacheDir . '/res_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/res_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
         }
 
         try {
-            $aresRequest = file_get_contents($url);
+            $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $aresRequest);
             }
@@ -205,16 +215,16 @@ class Ares
         // Sestaveni URL
         $url = sprintf(self::URL_TAX, $id);
 
-        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-        $cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/tax_raw_'.$cachedFileName;
+        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
+        $cachedFile = $this->cacheDir . '/tax_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/tax_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
         }
 
         try {
-            $vatRequest = file_get_contents($url);
+            $vatRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $vatRequest);
             }
@@ -263,15 +273,15 @@ class Ares
             urlencode(Lib::stripDiacritics($city))
         );
 
-        $cachedFileName = date($this->cacheStrategy).'_'.md5($name.$city).'.php';
-        $cachedFile = $this->cacheDir.'/find_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/find_raw_'.$cachedFileName;
+        $cachedFileName = date($this->cacheStrategy) . '_' . md5($name . $city) . '.php';
+        $cachedFile = $this->cacheDir . '/find_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/find_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
         }
 
-        $aresRequest = file_get_contents($url);
+        $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
         if ($this->debug) {
             file_put_contents($cachedRawFile, $aresRequest);
         }
