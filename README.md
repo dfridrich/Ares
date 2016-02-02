@@ -34,13 +34,13 @@ $people = $record->getCompanyPeople(); // array of Person
 ### Check
 
 ```
-$ vendor/bin/symplify-cs check src tests
+vendor/bin/symplify-cs check src tests
 ```
 
 ### Fix
 
 ```
-$ vendor/bin/symplify-cs fix src tests
+vendor/bin/symplify-cs fix src tests
 ```
 
 ## Contributors
