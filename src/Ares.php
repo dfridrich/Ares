@@ -38,12 +38,12 @@ class Ares
     /**
      * @var array
      */
-    private $contextOptions = array(
-        "ssl" => array(
-            "verify_peer" => false,
-            "verify_peer_name" => false,
-        ),
-    );
+    private $contextOptions = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+        ],
+    ];
 
     /**
      * @param null $cacheDir
@@ -100,7 +100,7 @@ class Ares
                 $data = $aresResponse->children($ns['are']);
                 $elements = $data->children($ns['D'])->VBAS;
 
-                $ico = (int)$elements->ICO;
+                $ico = (int) $elements->ICO;
                 if ($ico !== $id) {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }

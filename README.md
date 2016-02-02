@@ -34,11 +34,18 @@ $people = $record->getCompanyPeople(); // array of Person
 ### Check
 
 ```
-$ vendor/bin/symplify-cs check src Tests
+$ vendor/bin/symplify-cs check src tests
 ```
 
 ### Fix
 
 ```
-$ vendor/bin/symplify-cs fix src Tests
+$ vendor/bin/symplify-cs fix src tests
 ```
+
+## Contributors
+
+The list of people who contributed to this library.
+
+ - Dennis Fridrich
+ - Tomáš Votruba
