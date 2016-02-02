@@ -17,7 +17,7 @@ before_script:
 
 script:
   - phpunit $PHPUNIT_FLAGS
-  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src Tests; fi
+  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src tests; fi
 
 after_script:
   - if [[ "$PHPUNIT_FLAGS" != "" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi

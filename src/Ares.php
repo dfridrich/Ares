@@ -36,6 +36,16 @@ class Ares
     private $debug;
 
     /**
+     * @var array
+     */
+    private $contextOptions = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+        ],
+    ];
+
+    /**
      * @param null $cacheDir
      * @param bool $debug
      */
@@ -79,7 +89,7 @@ class Ares
         $url = sprintf(self::URL_BAS, $id);
 
         try {
-            $aresRequest = file_get_contents($url);
+            $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $aresRequest);
             }
@@ -153,7 +163,7 @@ class Ares
         }
 
         try {
-            $aresRequest = file_get_contents($url);
+            $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $aresRequest);
             }
@@ -214,7 +224,7 @@ class Ares
         }
 
         try {
-            $vatRequest = file_get_contents($url);
+            $vatRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $vatRequest);
             }
@@ -271,7 +281,7 @@ class Ares
             return unserialize(file_get_contents($cachedFile));
         }
 
-        $aresRequest = file_get_contents($url);
+        $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
         if ($this->debug) {
             file_put_contents($cachedRawFile, $aresRequest);
         }
