@@ -1,5 +1,4 @@
-ARES 
-====
+# ARES 
 
 [![Build Status](https://img.shields.io/travis/dfridrich/Ares.svg?style=flat-square)](https://travis-ci.org/dfridrich/Ares)
 [![Quality Score](https://img.shields.io/scrutinizer/g/dfridrich/Ares.svg?style=flat-square)](https://scrutinizer-ci.com/g/dfridrich/Ares)
@@ -10,15 +9,13 @@ ARES
 
 Communication with ARES & Justice (Czech business registers).
 
-Installation with [Composer](https://getcomposer.org/)
------------------------------------------------------
+## Installation with [Composer](https://getcomposer.org/)
 
 ``` sh
 php composer require dfridrich/ares
 ```
 
-Usage
------
+## Usage
 
 ```php
 require __DIR__.'/vendor/autoload.php';
@@ -30,4 +27,18 @@ $ares = new Ares();
 $record = $ares->findByIdentificationNumber(73263753); // instance of AresRecord
 
 $people = $record->getCompanyPeople(); // array of Person
+```
+
+## Coding standard
+
+### Check
+
+```
+$ vendor/bin/symplify-cs check src Tests
+```
+
+### Fix
+
+```
+$ vendor/bin/symplify-cs fix src Tests
 ```
