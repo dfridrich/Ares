@@ -12,14 +12,23 @@ class TaxRecord
     /**
      * @var string
      */
-    public $taxId = null;
+    private $taxId = null;
 
     /**
+     * TaxRecord constructor.
      * @param string $taxId
      */
-    public function setTaxId($taxId)
+    public function __construct($taxId)
     {
         $this->taxId = !empty($taxId) ? $taxId : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaxId()
+    {
+        return $this->taxId;
     }
 
     /**

@@ -105,27 +105,17 @@ class Ares
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
 
-                $record = new AresRecord();
+                $record = new AresRecord(
+                    $id,
+                    strval($elements->DIC), // taxId
+                    strval($elements->OF),  // companyName
+                    strval($elements->AA->NU), // street
+                    strval($elements->AA->CD), // house number
+                    strval($elements->AA->CO) ?: null, // house orientation number
+                    strval($elements->AA->NCO) ? strval($elements->AA->N.' - '.strval($elements->AA->NCO)) : strval($elements->AA->N), // town
+                    strval($elements->AA->PSC) // ZIP
+                );
 
-                $record->setCompanyId($id);
-                $record->setTaxId(strval($elements->DIC));
-                $record->setCompanyName(strval($elements->OF));
-                $record->setStreet(strval($elements->AA->NU));
-
-                if (strval($elements->AA->CO)) {
-                    $record->setStreetHouseNumber(strval($elements->AA->CD));
-                    $record->setStreetOrientationNumber(strval($elements->AA->CO));
-                } else {
-                    $record->setStreetHouseNumber(strval($elements->AA->CD));
-                }
-
-                if (strval($elements->AA->NCO)) {
-                    $record->setTown(strval($elements->AA->N.' - '.strval($elements->AA->NCO)));
-                } else {
-                    $record->setTown(strval($elements->AA->N));
-                }
-
-                $record->setZip(strval($elements->AA->PSC));
             } else {
                 throw new AresException('Databáze ARES není dostupná.');
             }
@@ -175,15 +165,16 @@ class Ares
                 $elements = $data->children($ns['D'])->Vypis_RES;
 
                 if (strval($elements->ZAU->ICO) === $id) {
-                    $record = new AresRecord();
-                    $record->setCompanyId(strval($id));
-                    $record->setTaxId($this->findVatById($id));
-                    $record->setCompanyName(strval($elements->ZAU->OF));
-                    $record->setStreet(strval($elements->SI->NU));
-                    $record->setStreetHouseNumber(strval($elements->SI->CD));
-                    $record->setStreetOrientationNumber(strval($elements->SI->CO));
-                    $record->setTown(strval($elements->SI->N));
-                    $record->setZip(strval($elements->SI->PSC));
+                    $record = new AresRecord(
+                        strval($id),
+                        $this->findVatById($id),
+                        strval($elements->ZAU->OF),
+                        strval($elements->SI->NU),
+                        strval($elements->SI->CD),
+                        strval($elements->SI->CO),
+                        strval($elements->SI->N),
+                        strval($elements->SI->PSC)
+                    );
                 } else {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
@@ -231,13 +222,15 @@ class Ares
             $vatResponse = simplexml_load_string($vatRequest);
 
             if ($vatResponse) {
-                $record = new TaxRecord();
+
                 $ns = $vatResponse->getDocNamespaces();
                 $data = $vatResponse->children($ns['are']);
                 $elements = $data->children($ns['dtt'])->V->S;
 
                 if (strval($elements->ico) === $id) {
-                    $record->setTaxId(str_replace('dic=', 'CZ', strval($elements->p_dph)));
+                    $record = new TaxRecord(
+                        str_replace('dic=', 'CZ', strval($elements->p_dph))
+                    );
                 } else {
                     throw new AresException('DIČ firmy nebylo nalezeno.');
                 }
@@ -300,6 +293,7 @@ class Ares
 
         $records = new AresRecords();
         foreach ($elements as $element) {
+            // TODO: What is this?
             $record = new AresRecord();
             $record->setCompanyId(strval($element->ico));
             $record->setTaxId(

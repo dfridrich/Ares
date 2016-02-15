@@ -15,89 +15,64 @@ class AresRecord
     /**
      * @var int
      */
-    public $companyId;
+    private $companyId;
 
     /**
      * @var string
      */
-    public $taxId;
+    private $taxId;
 
     /**
      * @var string
      */
-    public $companyName;
+    private $companyName;
 
     /**
      * @var string
      */
-    public $street;
+    private $street;
 
     /**
      * @var string
      */
-    public $streetHouseNumber;
+    private $streetHouseNumber;
 
     /**
      * @var string
      */
-    public $streetOrientationNumber;
+    private $streetOrientationNumber;
 
     /**
      * @var string
      */
-    public $town;
+    private $town;
 
     /**
      * @var string
      */
-    public $zip;
+    private $zip;
 
     /**
-     * @param $companyId
+     * AresRecord constructor.
+     * @param int    $companyId
+     * @param string $taxId
+     * @param string $companyName
+     * @param string $street
+     * @param string $streetHouseNumber
+     * @param string $streetOrientationNumber
+     * @param string $town
+     * @param string $zip
      */
-    public function setCompanyId($companyId)
+    public function __construct($companyId, $taxId, $companyName, $street, $streetHouseNumber, $streetOrientationNumber, $town, $zip)
     {
         $this->companyId = $companyId;
-    }
-
-    /**
-     * @param $companyName
-     */
-    public function setCompanyName($companyName)
-    {
-        $this->companyName = $companyName;
-    }
-
-    /**
-     * @param $taxId
-     */
-    public function setTaxId($taxId)
-    {
         $this->taxId = !empty($taxId) ? $taxId : null;
-    }
-
-    /**
-     * @param $street
-     */
-    public function setStreet($street)
-    {
+        $this->companyName = $companyName;
         $this->street = $street;
-    }
-
-    /**
-     * @param $streetHouseNumber
-     */
-    public function setStreetHouseNumber($streetHouseNumber)
-    {
         $this->streetHouseNumber = !empty($streetHouseNumber) ? $streetHouseNumber : null;
-    }
-
-    /**
-     * @param $streetOrientationNumber
-     */
-    public function setStreetOrientationNumber($streetOrientationNumber)
-    {
         $this->streetOrientationNumber = !empty($streetOrientationNumber) ? $streetOrientationNumber : null;
+        $this->town = $town;
+        $this->zip = $zip;
     }
 
     /**
@@ -111,22 +86,6 @@ class AresRecord
             $this->streetHouseNumber.'/'.$this->streetOrientationNumber
             :
             $this->streetHouseNumber);
-    }
-
-    /**
-     * @param $town
-     */
-    public function setTown($town)
-    {
-        $this->town = $town;
-    }
-
-    /**
-     * @param $zip
-     */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
     }
 
     /**
