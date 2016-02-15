@@ -9,12 +9,12 @@ use ArrayIterator;
  *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
-final class AresRecords implements \ArrayAccess, \IteratorAggregate
+final class AresRecords implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     /**
      * @var AresRecord[]
      */
-    public $array = [];
+    private $array = [];
 
     /**
      * @param mixed $offset
@@ -71,5 +71,13 @@ final class AresRecords implements \ArrayAccess, \IteratorAggregate
     public function getIterator()
     {
         return new ArrayIterator($this->array);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->array);
     }
 }
