@@ -61,12 +61,15 @@ final class Justice
         $crawler->filter('.aunp-content .div-table')->each(function (Crawler $table) use (&$people) {
             $title = $table->filter('.vr-hlavicka')->text();
 
-            if ('jednatel: ' === $title) {
-                $person = JusticeJednatelPersonParser::parseFromDomCrawler($table);
-                $people[$person->getName()] = $person;
-            } elseif ('Společník: ' === $title) {
-                $person = JusticeSpolecnikPersonParser::parseFromDomCrawler($table);
-                $people[$person->getName()] = $person;
+            try {
+                if ('jednatel: ' === $title) {
+                    $person = JusticeJednatelPersonParser::parseFromDomCrawler($table);
+                    $people[$person->getName()] = $person;
+                } elseif ('Společník: ' === $title) {
+                    $person = JusticeSpolecnikPersonParser::parseFromDomCrawler($table);
+                    $people[$person->getName()] = $person;
+                }
+            } catch (\Exception $e) {
             }
         });
 
