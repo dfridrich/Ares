@@ -9,6 +9,7 @@ use Symfony\Component\DomCrawler\Crawler;
 final class JusticeSpolecnikPersonParser
 {
     /**
+     * @param Crawler $crawler
      * @return Person
      */
     public static function parseFromDomCrawler(Crawler $crawler)
@@ -16,12 +17,12 @@ final class JusticeSpolecnikPersonParser
         $content = $crawler->text();
         $content = StringHelper::removeEmptyLines($content);
 
-        $contentItems = explode(PHP_EOL, $content);
-
+        $contentItems = explode("\n", $content);
+        $contentItems = array_map('trim', $contentItems);
         $name = trim(explode(',', $contentItems[1])[0]);
-        $birthday = DateTimeParser::parseFromCzechDateString($contentItems[2]);
-        $address = trim($contentItems[3]);
 
-        return new Person($name, $birthday, $address);
+        $birthday = DateTimeParser::parseFromCzechDateString($contentItems[2]);
+
+        return new Person($name, $birthday, $contentItems[3]);
     }
 }

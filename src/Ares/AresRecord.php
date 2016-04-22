@@ -3,7 +3,9 @@
 namespace Defr\Ares;
 
 use Defr\Justice;
-use Goutte\Client;
+use Defr\ValueObject\Person;
+use Goutte\Client as GouteClient;
+use GuzzleHttp\Client as GuzzleClient;
 
 /**
  * Class AresRecord.
@@ -51,6 +53,11 @@ class AresRecord
      * @var string
      */
     private $zip;
+
+    /**
+     * @var null|GouteClient
+     */
+    protected $client;
 
     /**
      * AresRecord constructor.
@@ -161,11 +168,36 @@ class AresRecord
     }
 
     /**
-     * @return array
+     * @param GouteClient $client
+     * @return $this
+     */
+    public function setClient(GouteClient $client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return GouteClient
+     */
+    public function getClient()
+    {
+        if (!$this->client) {
+            $this->client = new GouteClient();
+            $this->client->setClient(new GuzzleClient(['verify' => false]));
+        }
+
+        return $this->client;
+    }
+
+    /**
+     * @return array|Person[]
      */
     public function getCompanyPeople()
     {
-        $justice = new Justice(new Client());
+        $client = $this->getClient();
+        $justice = new Justice($client);
         $justiceRecord = $justice->findById($this->companyId);
         if ($justiceRecord) {
             return $justiceRecord->getPeople();

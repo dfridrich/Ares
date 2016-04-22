@@ -11,13 +11,14 @@ Communication with ARES & Justice (Czech business registers).
 
 ## Installation with [Composer](https://getcomposer.org/)
 
-``` sh
+```sh
 php composer require dfridrich/ares
 ```
 
 ## Usage
 
 ```php
+<?php
 require __DIR__.'/vendor/autoload.php';
 
 use Defr\Ares;
@@ -48,5 +49,6 @@ vendor/bin/symplify-cs fix src tests
 The list of people who contributed to this library.
 
  - Dennis Fridrich
- - Tomáš Votruba
  - Jan Kuchař
+ - Martin Zeman (Zemistr)
+ - Tomáš Votruba

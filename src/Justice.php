@@ -27,6 +27,11 @@ final class Justice
      */
     private $client;
 
+    /**
+     * Justice constructor.
+     *
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
@@ -69,7 +74,8 @@ final class Justice
     }
 
     /**
-     * @return int|false
+     * @param Crawler $crawler
+     * @return false|int
      */
     private function extractDetailUrlFromCrawler(Crawler $crawler)
     {

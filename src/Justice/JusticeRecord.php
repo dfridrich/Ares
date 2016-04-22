@@ -7,7 +7,7 @@ use Defr\ValueObject\Person;
 final class JusticeRecord
 {
     /**
-     * @var Person[]
+     * @var array|Person[]
      */
     private $people;
 
@@ -17,7 +17,7 @@ final class JusticeRecord
     }
 
     /**
-     * @return Person[]
+     * @return array|Person[]
      */
     public function getPeople()
     {

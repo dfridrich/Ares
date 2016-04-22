@@ -294,12 +294,12 @@ class Ares
         $records = new AresRecords();
         foreach ($elements as $element) {
             // TODO: What is this?
-            $record = new AresRecord();
-            $record->setCompanyId(strval($element->ico));
-            $record->setTaxId(
-                ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : '')
+            $record = new AresRecord(
+              strval($element->ico),
+              ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : ''),
+              strval($element->ojm),
+              null, null, null, null, null
             );
-            $record->setCompanyName(strval($element->ojm));
             //'adresa' => strval($element->jmn));
             $records[] = $record;
         }
