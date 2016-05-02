@@ -48,7 +48,7 @@ vendor/bin/symplify-cs fix src tests
 
 The list of people who contributed to this library.
 
- - Dennis Fridrich
- - Jan Kuchař
- - Martin Zeman (Zemistr)
- - Tomáš Votruba
+ - Dennis Fridrich - @dfridrich
+ - Tomáš Votruba - @TomasVotruba
+ - Martin Zeman - @Zemistr
+ - Jan Kuchař - @jkuchar
