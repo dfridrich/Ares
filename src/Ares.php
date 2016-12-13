@@ -36,32 +36,80 @@ class Ares
     private $debug;
 
     /**
+     * @var string
+     */
+    private $balancer = null;
+
+    /**
      * @var array
      */
     private $contextOptions = [
         'ssl' => [
-            'verify_peer' => false,
+            'verify_peer'      => false,
             'verify_peer_name' => false,
         ],
     ];
 
     /**
+     * @var string
+     */
+    private $lastUrl;
+
+    /**
      * @param null $cacheDir
      * @param bool $debug
      */
-    public function __construct($cacheDir = null, $debug = false)
+    public function __construct($cacheDir = null, $debug = false, $balancer = null)
     {
-        if ($cacheDir === null) {
+        if (null === $cacheDir) {
             $cacheDir = sys_get_temp_dir();
         }
 
-        $this->cacheDir = $cacheDir.'/defr/ares';
+        if (null !== $balancer) {
+            $this->balancer = $balancer;
+        }
+
+        $this->cacheDir = $cacheDir . '/defr/ares';
         $this->debug = $debug;
 
         // Create cache dirs if they doesn't exist
         if (!is_dir($this->cacheDir)) {
             mkdir($this->cacheDir, 0777, true);
         }
+    }
+
+    /**
+     * @param $balancer
+     * @return $this
+     */
+    public function setBalancer($balancer)
+    {
+        $this->balancer = $balancer;
+
+        return $this;
+    }
+
+    /**
+     * @param $url
+     * @return mixed
+     */
+    private function wrapUrl($url)
+    {
+        if ($this->balancer) {
+            $url = sprintf("%s?url=%s", $this->balancer, urlencode($url));
+        }
+
+        $this->lastUrl = $url;
+
+        return $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastUrl()
+    {
+        return $this->lastUrl;
     }
 
     /**
@@ -77,16 +125,16 @@ class Ares
         $id = Lib::toInteger($id);
         $this->ensureIdIsInteger($id);
 
-        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-        $cachedFile = $this->cacheDir.'/bas_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/bas_raw_'.$cachedFileName;
+        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
+        $cachedFile = $this->cacheDir . '/bas_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/bas_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
         }
 
         // Sestaveni URL
-        $url = sprintf(self::URL_BAS, $id);
+        $url = $this->wrapUrl(sprintf(self::URL_BAS, $id));
 
         try {
             $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
@@ -100,22 +148,32 @@ class Ares
                 $data = $aresResponse->children($ns['are']);
                 $elements = $data->children($ns['D'])->VBAS;
 
-                $ico = (int) $elements->ICO;
+                $ico = (int)$elements->ICO;
                 if ($ico !== $id) {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
 
-                $record = new AresRecord(
-                    $id,
-                    strval($elements->DIC), // taxId
-                    strval($elements->OF),  // companyName
-                    strval($elements->AA->NU), // street
-                    strval($elements->AA->CD), // house number
-                    strval($elements->AA->CO) ?: null, // house orientation number
-                    strval($elements->AA->NCO) ? strval($elements->AA->N.' - '.strval($elements->AA->NCO)) : strval($elements->AA->N), // town
-                    strval($elements->AA->PSC) // ZIP
-                );
+                $record = new AresRecord();
 
+                $record->setCompanyId($id);
+                $record->setTaxId(strval($elements->DIC));
+                $record->setCompanyName(strval($elements->OF));
+                $record->setStreet(strval($elements->AA->NU));
+
+                if (strval($elements->AA->CO)) {
+                    $record->setStreetHouseNumber(strval($elements->AA->CD));
+                    $record->setStreetOrientationNumber(strval($elements->AA->CO));
+                } else {
+                    $record->setStreetHouseNumber(strval($elements->AA->CD));
+                }
+
+                if (strval($elements->AA->NCO)) {
+                    $record->setTown(strval($elements->AA->N . ' - ' . strval($elements->AA->NCO)));
+                } else {
+                    $record->setTown(strval($elements->AA->N));
+                }
+
+                $record->setZip(strval($elements->AA->PSC));
             } else {
                 throw new AresException('Databáze ARES není dostupná.');
             }
@@ -142,11 +200,11 @@ class Ares
         $this->ensureIdIsInteger($id);
 
         // Sestaveni URL
-        $url = sprintf(self::URL_RES, $id);
+        $url = $this->wrapUrl(sprintf(self::URL_RES, $id));
 
-        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-        $cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/res_raw_'.$cachedFileName;
+        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
+        $cachedFile = $this->cacheDir . '/res_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/res_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -165,16 +223,15 @@ class Ares
                 $elements = $data->children($ns['D'])->Vypis_RES;
 
                 if (strval($elements->ZAU->ICO) === $id) {
-                    $record = new AresRecord(
-                        strval($id),
-                        $this->findVatById($id),
-                        strval($elements->ZAU->OF),
-                        strval($elements->SI->NU),
-                        strval($elements->SI->CD),
-                        strval($elements->SI->CO),
-                        strval($elements->SI->N),
-                        strval($elements->SI->PSC)
-                    );
+                    $record = new AresRecord();
+                    $record->setCompanyId(strval($id));
+                    $record->setTaxId($this->findVatById($id));
+                    $record->setCompanyName(strval($elements->ZAU->OF));
+                    $record->setStreet(strval($elements->SI->NU));
+                    $record->setStreetHouseNumber(strval($elements->SI->CD));
+                    $record->setStreetOrientationNumber(strval($elements->SI->CO));
+                    $record->setTown(strval($elements->SI->N));
+                    $record->setZip(strval($elements->SI->PSC));
                 } else {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
@@ -204,11 +261,11 @@ class Ares
         $this->ensureIdIsInteger($id);
 
         // Sestaveni URL
-        $url = sprintf(self::URL_TAX, $id);
+        $url = $this->wrapUrl(sprintf(self::URL_TAX, $id));
 
-        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-        $cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/tax_raw_'.$cachedFileName;
+        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
+        $cachedFile = $this->cacheDir . '/tax_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/tax_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -222,15 +279,13 @@ class Ares
             $vatResponse = simplexml_load_string($vatRequest);
 
             if ($vatResponse) {
-
+                $record = new TaxRecord();
                 $ns = $vatResponse->getDocNamespaces();
                 $data = $vatResponse->children($ns['are']);
                 $elements = $data->children($ns['dtt'])->V->S;
 
                 if (strval($elements->ico) === $id) {
-                    $record = new TaxRecord(
-                        str_replace('dic=', 'CZ', strval($elements->p_dph))
-                    );
+                    $record->setTaxId(str_replace('dic=', 'CZ', strval($elements->p_dph)));
                 } else {
                     throw new AresException('DIČ firmy nebylo nalezeno.');
                 }
@@ -260,15 +315,15 @@ class Ares
             throw new InvalidArgumentException('Zadejte minimálně 3 znaky pro hledání.');
         }
 
-        $url = sprintf(
+        $url = $this->wrapUrl(sprintf(
             self::URL_FIND,
             urlencode(Lib::stripDiacritics($name)),
             urlencode(Lib::stripDiacritics($city))
-        );
+        ));
 
-        $cachedFileName = date($this->cacheStrategy).'_'.md5($name.$city).'.php';
-        $cachedFile = $this->cacheDir.'/find_'.$cachedFileName;
-        $cachedRawFile = $this->cacheDir.'/find_raw_'.$cachedFileName;
+        $cachedFileName = date($this->cacheStrategy) . '_' . md5($name . $city) . '.php';
+        $cachedFile = $this->cacheDir . '/find_' . $cachedFileName;
+        $cachedRawFile = $this->cacheDir . '/find_raw_' . $cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -293,13 +348,12 @@ class Ares
 
         $records = new AresRecords();
         foreach ($elements as $element) {
-            // TODO: What is this?
-            $record = new AresRecord(
-              strval($element->ico),
-              ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : ''),
-              strval($element->ojm),
-              null, null, null, null, null
+            $record = new AresRecord();
+            $record->setCompanyId(strval($element->ico));
+            $record->setTaxId(
+                ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : '')
             );
+            $record->setCompanyName(strval($element->ojm));
             //'adresa' => strval($element->jmn));
             $records[] = $record;
         }

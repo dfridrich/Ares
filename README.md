@@ -30,6 +30,17 @@ $record = $ares->findByIdentificationNumber(73263753); // instance of AresRecord
 $people = $record->getCompanyPeople(); // array of Person
 ```
 
+## ARES Balancer
+
+You can use simple balance script to spread the traffic among more IP addresses. See script `examples/external.php`.
+
+### Usage
+
+```php
+$ares = new Ares();
+$ares->setBalancer('http://some.loadbalancer.domain');
+```
+
 ## Coding standard
 
 ### Check

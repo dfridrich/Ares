@@ -51,6 +51,17 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->assertCount(2, $companyPeople);
     }
 
+    public function testBalancer()
+    {
+        $ares = new Ares();
+        $ares->setBalancer('http://some.loadbalancer.domain');
+        try {
+            $ares->findByIdentificationNumber(26168685);
+        } catch (Ares\AresException $e) {
+        }
+        $this->assertEquals('http://some.loadbalancer.domain?url=http%3A%2F%2Fwwwinfo.mfcr.cz%2Fcgi-bin%2Fares%2Fdarv_bas.cgi%3Fico%3D26168685', $ares->getLastUrl());
+    }
+
     /**
      * @return bool
      */
