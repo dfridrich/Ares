@@ -10,6 +10,7 @@ final class JusticeJednatelPersonParser
 {
     /**
      * @param Crawler $crawler
+     *
      * @return Person
      */
     public static function parseFromDomCrawler(Crawler $crawler)

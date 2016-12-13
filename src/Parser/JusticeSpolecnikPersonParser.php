@@ -10,6 +10,7 @@ final class JusticeSpolecnikPersonParser
 {
     /**
      * @param Crawler $crawler
+     *
      * @return Person
      */
     public static function parseFromDomCrawler(Crawler $crawler)

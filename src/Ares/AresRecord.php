@@ -61,6 +61,7 @@ class AresRecord
 
     /**
      * AresRecord constructor.
+     *
      * @param int    $companyId
      * @param string $taxId
      * @param string $companyName
@@ -169,6 +170,7 @@ class AresRecord
 
     /**
      * @param GouteClient $client
+     *
      * @return $this
      */
     public function setClient(GouteClient $client)

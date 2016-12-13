@@ -45,7 +45,7 @@ class Ares
      */
     private $contextOptions = [
         'ssl' => [
-            'verify_peer'      => false,
+            'verify_peer' => false,
             'verify_peer_name' => false,
         ],
     ];
@@ -69,7 +69,7 @@ class Ares
             $this->balancer = $balancer;
         }
 
-        $this->cacheDir = $cacheDir . '/defr/ares';
+        $this->cacheDir = $cacheDir.'/defr/ares';
         $this->debug = $debug;
 
         // Create cache dirs if they doesn't exist
@@ -80,6 +80,7 @@ class Ares
 
     /**
      * @param $balancer
+     *
      * @return $this
      */
     public function setBalancer($balancer)
@@ -91,12 +92,13 @@ class Ares
 
     /**
      * @param $url
+     *
      * @return mixed
      */
     private function wrapUrl($url)
     {
         if ($this->balancer) {
-            $url = sprintf("%s?url=%s", $this->balancer, urlencode($url));
+            $url = sprintf('%s?url=%s', $this->balancer, urlencode($url));
         }
 
         $this->lastUrl = $url;
@@ -125,9 +127,9 @@ class Ares
         $id = Lib::toInteger($id);
         $this->ensureIdIsInteger($id);
 
-        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
-        $cachedFile = $this->cacheDir . '/bas_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/bas_raw_' . $cachedFileName;
+        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
+        $cachedFile = $this->cacheDir.'/bas_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/bas_raw_'.$cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -148,7 +150,7 @@ class Ares
                 $data = $aresResponse->children($ns['are']);
                 $elements = $data->children($ns['D'])->VBAS;
 
-                $ico = (int)$elements->ICO;
+                $ico = (int) $elements->ICO;
                 if ($ico !== $id) {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
@@ -168,7 +170,7 @@ class Ares
                 }
 
                 if (strval($elements->AA->NCO)) {
-                    $record->setTown(strval($elements->AA->N . ' - ' . strval($elements->AA->NCO)));
+                    $record->setTown(strval($elements->AA->N.' - '.strval($elements->AA->NCO)));
                 } else {
                     $record->setTown(strval($elements->AA->N));
                 }
@@ -202,9 +204,9 @@ class Ares
         // Sestaveni URL
         $url = $this->wrapUrl(sprintf(self::URL_RES, $id));
 
-        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
-        $cachedFile = $this->cacheDir . '/res_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/res_raw_' . $cachedFileName;
+        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
+        $cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/res_raw_'.$cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -263,9 +265,9 @@ class Ares
         // Sestaveni URL
         $url = $this->wrapUrl(sprintf(self::URL_TAX, $id));
 
-        $cachedFileName = $id . '_' . date($this->cacheStrategy) . '.php';
-        $cachedFile = $this->cacheDir . '/tax_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/tax_raw_' . $cachedFileName;
+        $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
+        $cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/tax_raw_'.$cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));
@@ -321,9 +323,9 @@ class Ares
             urlencode(Lib::stripDiacritics($city))
         ));
 
-        $cachedFileName = date($this->cacheStrategy) . '_' . md5($name . $city) . '.php';
-        $cachedFile = $this->cacheDir . '/find_' . $cachedFileName;
-        $cachedRawFile = $this->cacheDir . '/find_raw_' . $cachedFileName;
+        $cachedFileName = date($this->cacheStrategy).'_'.md5($name.$city).'.php';
+        $cachedFile = $this->cacheDir.'/find_'.$cachedFileName;
+        $cachedRawFile = $this->cacheDir.'/find_raw_'.$cachedFileName;
 
         if (is_file($cachedFile)) {
             return unserialize(file_get_contents($cachedFile));

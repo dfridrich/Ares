@@ -16,6 +16,7 @@ class TaxRecord
 
     /**
      * TaxRecord constructor.
+     *
      * @param string $taxId
      */
     public function __construct($taxId)
