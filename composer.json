@@ -18,8 +18,7 @@
         "fabpot/goutte": "^2.0|^3.0"
     },
     "require-dev": {
-        "symplify/coding-standard": "^0.1",
-        "phpunit/phpunit": "^5.7"
+        "symplify/coding-standard": "^0.1"
     },
     "autoload": {
         "psr-4": {
