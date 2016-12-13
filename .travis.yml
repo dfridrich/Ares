@@ -19,8 +19,8 @@ before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
 
-script:
-  - phpunit $PHPUNIT_FLAGS
+#script:
+#  - phpunit $PHPUNIT_FLAGS
 #  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src tests; fi
 
 #after_script:
