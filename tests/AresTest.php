@@ -46,8 +46,8 @@ final class AresTest extends PHPUnit_Framework_TestCase
         }
 
         $record = $this->ares->findByIdentificationNumber(27791394);
-
-        $companyPeople = $record->getCompanyPeople();
+        $companyPeople
+            = $record->getCompanyPeople();
         $this->assertCount(2, $companyPeople);
     }
 
