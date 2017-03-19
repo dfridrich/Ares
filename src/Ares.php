@@ -169,7 +169,7 @@ class Ares
                     $record->setStreetHouseNumber(strval($elements->AA->CD));
                 }
 
-                if (strval($elements->AA->NCO)) {
+                if (strval($elements->AA->NCO) != strval($elements->AA->N)) {
                     $record->setTown(strval($elements->AA->N.' - '.strval($elements->AA->NCO)));
                 } else {
                     $record->setTown(strval($elements->AA->N));
