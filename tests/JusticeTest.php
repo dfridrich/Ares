@@ -4,9 +4,9 @@ namespace Defr\Tests;
 
 use Defr\Justice;
 use Goutte\Client;
-use PHPUnit_Framework_TestCase;
+use \PHPUnit\Framework\TestCase;
 
-final class JusticeTest extends PHPUnit_Framework_TestCase
+final class JusticeTest extends TestCase
 {
     /**
      * @var Justice

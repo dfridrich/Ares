@@ -3,9 +3,9 @@
 namespace Defr\Ares\Tests;
 
 use Defr\Ares;
-use PHPUnit_Framework_TestCase;
+use \PHPUnit\Framework\TestCase;
 
-final class AresTest extends PHPUnit_Framework_TestCase
+final class AresTest extends TestCase
 {
     /**
      * @var Ares
