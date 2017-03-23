@@ -8,21 +8,21 @@ php:
   - 7.1
   - hhvm
 
-#matrix:
-#  allow_failures:
-#    - php: 7.0
-#    - php: hhvm
-#  include:
-#    - php: 7.0
-#      env: PHPUNIT_FLAGS="--coverage-clover coverage.clover" CHECK_CS=true
+matrix:
+  allow_failures:
+    - php: 7.0
+    - php: hhvm
+  include:
+    - php: 7.0
+      env: PHPUNIT_FLAGS="--coverage-clover coverage.clover" CHECK_CS=true
 
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
 
-#script:
-#  - phpunit $PHPUNIT_FLAGS
-#  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src tests; fi
+script:
+  - phpunit $PHPUNIT_FLAGS
+  - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src tests; fi
 
-#after_script:
-#  - if [[ "$PHPUNIT_FLAGS" != "" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+after_script:
+- if [[ "$PHPUNIT_FLAGS" != "" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
