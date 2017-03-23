@@ -62,7 +62,7 @@ class Ares
     public function __construct($cacheDir = null, $debug = false, $balancer = null)
     {
         if (null === $cacheDir) {
-            $cacheDir = sys_get_temp_dir();
+            $cacheDir = '../temp';
         }
 
         if (null !== $balancer) {
@@ -168,9 +168,11 @@ class Ares
                 } else {
                     $record->setStreetHouseNumber(strval($elements->AA->CD));
                 }
-
-                if (strval($elements->AA->NCO) != strval($elements->AA->N)) {
-                    $record->setTown(strval($elements->AA->NMC));
+                
+                if (strval($elements->AA->N) == "Praha") { //Praha
+                    $record->setTown(strval($elements->AA->NMC) ." - ". strval($elements->AA->NCO));
+                } elseif(strval($elements->AA->NCO) != strval($elements->AA->N)) { //Ostrava
+                    $record->setTown(strval($elements->AA->N) ." - ". strval($elements->AA->NCO));
                 } else {
                     $record->setTown(strval($elements->AA->N));
                 }
