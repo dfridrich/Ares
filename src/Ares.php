@@ -170,7 +170,7 @@ class Ares
                 }
 
                 if (strval($elements->AA->NCO) != strval($elements->AA->N)) {
-                    $record->setTown(strval($elements->AA->N.' - '.strval($elements->AA->NCO)));
+                    $record->setTown(strval($elements->AA->NMC));
                 } else {
                     $record->setTown(strval($elements->AA->N));
                 }
