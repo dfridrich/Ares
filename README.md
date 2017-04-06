@@ -63,3 +63,4 @@ The list of people who contributed to this library.
  - Tomáš Votruba - @TomasVotruba
  - Martin Zeman - @Zemistr
  - Jan Kuchař - @jkuchar
+ - Petr Parolek - @petrparolek
