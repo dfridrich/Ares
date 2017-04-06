@@ -62,7 +62,7 @@ class Ares
     public function __construct($cacheDir = null, $debug = false, $balancer = null)
     {
         if (null === $cacheDir) {
-            $cacheDir = '../temp';
+            $cacheDir = sys_get_tmp_dir();
         }
 
         if (null !== $balancer) {
