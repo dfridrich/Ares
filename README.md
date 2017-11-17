@@ -9,10 +9,10 @@
 
 Communication with ARES & Justice (Czech business registers).
 
-## Installation with [Composer](https://getcomposer.org/)
+## Installation
 
 ```sh
-php composer require dfridrich/ares
+composer require dfridrich/ares
 ```
 
 ## Usage
