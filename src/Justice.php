@@ -79,7 +79,7 @@ final class Justice
     /**
      * @param Crawler $crawler
      *
-     * @return false|int
+     * @return false|string
      */
     private function extractDetailUrlFromCrawler(Crawler $crawler)
     {
