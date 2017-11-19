@@ -20,15 +20,14 @@ final class AresTest extends PHPUnit_Framework_TestCase
     public function testFindByIdentificationNumber()
     {
         $record = $this->ares->findByIdentificationNumber(73263753);
-
         $this->assertSame('Dennis Fridrich', $record->getCompanyName());
         $this->assertSame('CZ8508095453', $record->getTaxId());
         $this->assertSame(73263753, $record->getCompanyId());
-        $this->assertSame('Herodova', $record->getStreet());
-        $this->assertSame('1871', $record->getStreetHouseNumber());
-        $this->assertSame('4', $record->getStreetOrientationNumber());
-        $this->assertSame('Ostrava - Moravská Ostrava', $record->getTown());
-        $this->assertSame('70200', $record->getZip());
+        $this->assertEmpty($record->getStreet());
+        $this->assertSame('15', $record->getStreetHouseNumber());
+        $this->assertEmpty($record->getStreetOrientationNumber());
+        $this->assertSame('Petrovice - Obděnice', $record->getTown());
+        $this->assertSame('26255', $record->getZip());
     }
 
     /**
