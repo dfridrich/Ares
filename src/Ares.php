@@ -79,7 +79,7 @@ class Ares
     }
 
     /**
-     * @param $balancer
+     * @param string $balancer
      *
      * @return $this
      */
@@ -91,9 +91,9 @@ class Ares
     }
 
     /**
-     * @param $url
+     * @param string $url
      *
-     * @return mixed
+     * @return string
      */
     private function wrapUrl($url)
     {
@@ -256,7 +256,7 @@ class Ares
      * @throws InvalidArgumentException
      * @throws \Exception
      *
-     * @return TaxRecord|mixed
+     * @return string
      */
     public function findVatById($id)
     {
@@ -383,7 +383,7 @@ class Ares
     }
 
     /**
-     * @param mixed $id
+     * @param integer $id
      */
     private function ensureIdIsInteger($id)
     {
