@@ -30,6 +30,12 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->assertSame('26255', $record->getZip());
     }
 
+    public function testFindByIdentificationNumberWithLeadingZeros()
+    {
+        $record = $this->ares->findByIdentificationNumber('00006947');
+        $this->assertSame('00006947', $record->getCompanyId());
+    }
+
     /**
      * @expectedException \Defr\Ares\AresException
      */

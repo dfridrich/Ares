@@ -157,7 +157,7 @@ class Ares
 
                 $record = new AresRecord();
 
-                $record->setCompanyId($id);
+                $record->setCompanyId(strval($elements->ICO));
                 $record->setTaxId(strval($elements->DIC));
                 $record->setCompanyName(strval($elements->OF));
                 $record->setStreet(strval($elements->AA->NU));
