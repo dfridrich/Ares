@@ -172,11 +172,11 @@ class Ares
                 } else {
                     $record->setStreetHouseNumber(strval($elements->AA->CD));
                 }
-                
-                if (strval($elements->AA->N) == "Praha") { //Praha
-                    $record->setTown(strval($elements->AA->NMC) ." - ". strval($elements->AA->NCO));
-                } elseif(strval($elements->AA->NCO) != strval($elements->AA->N)) { //Ostrava
-                    $record->setTown(strval($elements->AA->N) ." - ". strval($elements->AA->NCO));
+
+                if (strval($elements->AA->N) === 'Praha') { //Praha
+                    $record->setTown(strval($elements->AA->NMC).' - '.strval($elements->AA->NCO));
+                } elseif (strval($elements->AA->NCO) !== strval($elements->AA->N)) { //Ostrava
+                    $record->setTown(strval($elements->AA->N).' - '.strval($elements->AA->NCO));
                 } else {
                     $record->setTown(strval($elements->AA->N));
                 }
@@ -387,7 +387,7 @@ class Ares
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     private function ensureIdIsInteger($id)
     {

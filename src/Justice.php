@@ -70,6 +70,7 @@ final class Justice
                     $people[$person->getName()] = $person;
                 }
             } catch (\Exception $e) {
+                throw $e;
             }
         });
 

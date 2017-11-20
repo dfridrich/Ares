@@ -61,6 +61,7 @@ class AresRecord
 
     /**
      * AresRecord constructor.
+     *
      * @param null $companyId
      * @param null $taxId
      * @param null $companyName
@@ -70,8 +71,16 @@ class AresRecord
      * @param null $town
      * @param null $zip
      */
-    public function __construct($companyId = null, $taxId = null, $companyName = null, $street = null, $streetHouseNumber = null, $streetOrientationNumber = null, $town = null, $zip = null)
-    {
+    public function __construct(
+        $companyId = null,
+        $taxId = null,
+        $companyName = null,
+        $street = null,
+        $streetHouseNumber = null,
+        $streetOrientationNumber = null,
+        $town = null,
+        $zip = null
+    ) {
         $this->companyId = $companyId;
         $this->taxId = !empty($taxId) ? $taxId : null;
         $this->companyName = $companyName;
@@ -87,12 +96,12 @@ class AresRecord
      */
     public function getStreetWithNumbers()
     {
-        return $this->street . ' '
-        . ($this->streetOrientationNumber
-            ?
-            $this->streetHouseNumber . '/' . $this->streetOrientationNumber
-            :
-            $this->streetHouseNumber);
+        return $this->street.' '
+            .($this->streetOrientationNumber
+                ?
+                $this->streetHouseNumber.'/'.$this->streetOrientationNumber
+                :
+                $this->streetHouseNumber);
     }
 
     /**
@@ -270,5 +279,4 @@ class AresRecord
     {
         $this->zip = $zip;
     }
-
 }
