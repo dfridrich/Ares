@@ -22,7 +22,7 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $record = $this->ares->findByIdentificationNumber(73263753);
         $this->assertSame('Dennis Fridrich', $record->getCompanyName());
         $this->assertSame('CZ8508095453', $record->getTaxId());
-        $this->assertSame(73263753, $record->getCompanyId());
+        $this->assertSame('73263753', $record->getCompanyId());
         $this->assertEmpty($record->getStreet());
         $this->assertSame('15', $record->getStreetHouseNumber());
         $this->assertEmpty($record->getStreetOrientationNumber());
@@ -42,6 +42,14 @@ final class AresTest extends PHPUnit_Framework_TestCase
     public function testFindByIdentificationNumberException()
     {
         $this->ares->findByIdentificationNumber('A1234');
+    }
+
+    /**
+     * @expectedException \Defr\Ares\AresException
+     */
+    public function testFindByEmptyStringException()
+    {
+        $this->ares->findByIdentificationNumber('');
     }
 
     public function testGetCompanyPeople()

@@ -127,6 +127,10 @@ class Ares
         $id = Lib::toInteger($id);
         $this->ensureIdIsInteger($id);
 
+        if (empty($id)) {
+            throw new AresException('IČ firmy musí být zadáno.');
+        }
+
         $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
         $cachedFile = $this->cacheDir.'/bas_'.$cachedFileName;
         $cachedRawFile = $this->cacheDir.'/bas_raw_'.$cachedFileName;
