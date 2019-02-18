@@ -28,8 +28,8 @@ final class JusticeTest extends TestCase
         $people = $justiceRecord->getPeople();
         $this->assertCount(2, $people);
 
-        $this->assertArrayHasKey('Mgr. ROBERT RUNTÁK', $people);
-        $person = $people['Mgr. ROBERT RUNTÁK'];
+        $this->assertArrayHasKey('Mgr. Robert Runták', $people);
+        $person = $people['Mgr. Robert Runták'];
         $this->assertInstanceOf('DateTime', $person->getBirthday());
         $this->assertIsString($person->getAddress());
     }
