@@ -5,8 +5,7 @@ namespace Defr;
 use Assert\Assertion;
 use Defr\Justice\JusticeRecord;
 use Defr\Justice\SubjectNotFoundException;
-use Defr\Parser\JusticeJednatelPersonParser;
-use Defr\Parser\JusticeSpolecnikPersonParser;
+use Defr\Parser\PersonParser;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -41,6 +40,7 @@ final class Justice
      * @param int $id
      *
      * @throws SubjectNotFoundException
+     * @throws \Assert\AssertionFailedException
      *
      * @return JusticeRecord|false
      */
@@ -62,12 +62,11 @@ final class Justice
             $title = $table->filter('.vr-hlavicka')->text();
 
             try {
-                if ('jednatel: ' === $title) {
-                    $person = JusticeJednatelPersonParser::parseFromDomCrawler($table);
-                    $people[$person->getName()] = $person;
-                } elseif ('Společník: ' === $title) {
-                    $person = JusticeSpolecnikPersonParser::parseFromDomCrawler($table);
-                    $people[$person->getName()] = $person;
+                if (in_array($title, ['jednatel: ', 'Jednatel: ', 'Společník: '])) {
+                    $person = PersonParser::parseFromDomCrawler($table);
+                    if ($person !== null && !isset($people[$person->getName()])) {
+                        $people[$person->getName()] = $person;
+                    }
                 }
             } catch (\Exception $e) {
                 throw $e;
