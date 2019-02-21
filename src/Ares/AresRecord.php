@@ -298,4 +298,9 @@ class AresRecord
             $this->insolvencyRegister = $registers[22];
         }
     }
+
+    public function getInsolvencyRegister()
+    {
+        return $this->insolvencyRegister;
+    }
 }
