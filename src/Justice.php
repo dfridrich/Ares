@@ -46,6 +46,9 @@ final class Justice
      */
     public function findById($id)
     {
+
+        $id = is_numeric($id) ? (int)$id : $id;
+
         Assertion::integer($id);
 
         $crawler = $this->client->request('GET', sprintf(self::URL_SUBJECTS, $id));
