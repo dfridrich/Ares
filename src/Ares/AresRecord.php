@@ -55,6 +55,11 @@ class AresRecord
     private $zip;
 
     /**
+     * @var integer
+     */
+    private $stateCode;
+
+    /**
      * @var string
      */
     private $insolvencyRegister;
@@ -84,7 +89,8 @@ class AresRecord
         $streetHouseNumber = null,
         $streetOrientationNumber = null,
         $town = null,
-        $zip = null
+        $zip = null,
+        $stateCode = null
     ) {
         $this->companyId = $companyId;
         $this->taxId = !empty($taxId) ? $taxId : null;
@@ -94,6 +100,7 @@ class AresRecord
         $this->streetOrientationNumber = !empty($streetOrientationNumber) ? $streetOrientationNumber : null;
         $this->town = $town;
         $this->zip = $zip;
+        $this->stateCode = $stateCode;
     }
 
     /**
@@ -282,6 +289,22 @@ class AresRecord
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStateCode()
+    {
+        return $this->stateCode;
+    }
+
+    /**
+     * @param int $stateCode
+     */
+    public function setStateCode($stateCode)
+    {
+        $this->stateCode = $stateCode;
     }
 
     /**

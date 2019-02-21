@@ -157,6 +157,9 @@ class Ares
                 $record->setZip(strval($elements->AA->PSC));
 
                 $record->setRegisters(strval($elements->PSU));
+
+                $stateInfo = $elements->AA->AU->children($ns['U']);
+                $record->setStateCode(strval($stateInfo->KK));
             } else {
                 throw new AresException('Databáze ARES není dostupná.');
             }

@@ -34,7 +34,8 @@ final class AresTest extends TestCase
         }
         if ($expectedExceptionMessage !== null) {
             $this->expectExceptionMessage($expectedExceptionMessage);
-        }
+        $this->assertSame('27', $record->getStateCode());
+    }
 
         // when
         $actual = $this->ares->findByIdentificationNumber($companyId);
