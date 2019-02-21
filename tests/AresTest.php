@@ -28,6 +28,7 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($record->getStreetOrientationNumber());
         $this->assertSame('Petrovice - Obděnice', $record->getTown());
         $this->assertSame('26255', $record->getZip());
+        $this->assertSame('27', $record->getStateCode());
     }
 
     public function testFindByIdentificationNumberWithLeadingZeros()
