@@ -55,6 +55,11 @@ class AresRecord
     private $zip;
 
     /**
+     * @var string
+     */
+    private $insolvencyRegister;
+
+    /**
      * @var null|GouteClient
      */
     protected $client;
@@ -277,5 +282,20 @@ class AresRecord
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @param string $registers
+     *
+     * N (nebo jiný znak) - není v evidenci
+     * A - platná registrace
+     * Z - zaniklá registrace
+     * E - v pozici č. 22 označuje, že existuje záznam v Insolvenčním rejstříku. Nutno prověřit stav řízení!
+     */
+    public function setRegisters($registers)
+    {
+        if (isset($registers[22])) {
+            $this->insolvencyRegister = $registers[22];
+        }
     }
 }

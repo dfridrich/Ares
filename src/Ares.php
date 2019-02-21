@@ -155,6 +155,8 @@ class Ares
                 }
 
                 $record->setZip(strval($elements->AA->PSC));
+
+                $record->setRegisters(strval($elements->PSU));
             } else {
                 throw new AresException('Databáze ARES není dostupná.');
             }
