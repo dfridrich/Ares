@@ -13,7 +13,7 @@ final class AresTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->ares = new Ares();
+        $this->ares = new Ares(null,true);
     }
 
     /**
@@ -35,6 +35,10 @@ final class AresTest extends TestCase
         if ($expectedExceptionMessage !== null) {
             $this->expectExceptionMessage($expectedExceptionMessage);
         $this->assertSame('27', $record->getStateCode());
+        $record = $this->ares->findByIdentificationNumber(48528803);
+        $this->assertSame('Milady Horákové 890/20', $record->getStreetWithNumbers());
+        $record = $this->ares->findByIdentificationNumber(1313410);
+        $this->assertSame('Opatovice 76', $record->getStreetWithNumbers());
     }
 
         // when
