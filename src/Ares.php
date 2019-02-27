@@ -164,7 +164,13 @@ class Ares
                 $record->setCompanyId(strval($elements->ICO));
                 $record->setTaxId(strval($elements->DIC));
                 $record->setCompanyName(strval($elements->OF));
-                $record->setStreet(strval($elements->AA->NU));
+                if (strval($elements->AA->NU) !== '') {
+                    $record->setStreet(strval($elements->AA->NU));
+                } else {
+                    if (strval($elements->AA->NCO) !== '') {
+                        $record->setStreet(strval($elements->AA->NCO));
+                    }
+                }
 
                 if (strval($elements->AA->CO)) {
                     $record->setStreetHouseNumber(strval($elements->AA->CD));
@@ -174,9 +180,11 @@ class Ares
                 }
 
                 if (strval($elements->AA->N) === 'Praha') { //Praha
-                    $record->setTown(strval($elements->AA->NMC).' - '.strval($elements->AA->NCO));
+                    $record->setTown(strval($elements->AA->NMC));
+                    $record->setArea(strval($elements->AA->NCO));
                 } elseif (strval($elements->AA->NCO) !== strval($elements->AA->N)) { //Ostrava
-                    $record->setTown(strval($elements->AA->N).' - '.strval($elements->AA->NCO));
+                    $record->setTown(strval($elements->AA->N));
+                    $record->setArea(strval($elements->AA->NCO));
                 } else {
                     $record->setTown(strval($elements->AA->N));
                 }

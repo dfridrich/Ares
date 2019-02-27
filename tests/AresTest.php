@@ -14,7 +14,7 @@ final class AresTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->ares = new Ares();
+        $this->ares = new Ares(null,true);
     }
 
     public function testFindByIdentificationNumber()
@@ -23,12 +23,17 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->assertSame('Dennis Fridrich', $record->getCompanyName());
         $this->assertSame('', $record->getTaxId());
         $this->assertSame('73263753', $record->getCompanyId());
-        $this->assertEmpty($record->getStreet());
+        $this->assertSame('Obděnice', $record->getStreet());
         $this->assertSame('15', $record->getStreetHouseNumber());
         $this->assertEmpty($record->getStreetOrientationNumber());
-        $this->assertSame('Petrovice - Obděnice', $record->getTown());
+        $this->assertSame('Obděnice 15', $record->getStreetWithNumbers());
+        $this->assertSame('Petrovice', $record->getTown());
         $this->assertSame('26255', $record->getZip());
         $this->assertSame('27', $record->getStateCode());
+        $record = $this->ares->findByIdentificationNumber(48528803);
+        $this->assertSame('Milady Horákové 890/20', $record->getStreetWithNumbers());
+        $record = $this->ares->findByIdentificationNumber(1313410);
+        $this->assertSame('Opatovice 76', $record->getStreetWithNumbers());
     }
 
     public function testFindByIdentificationNumberWithLeadingZeros()

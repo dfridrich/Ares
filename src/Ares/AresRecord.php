@@ -52,6 +52,11 @@ class AresRecord
     /**
      * @var string
      */
+    private $area;
+
+    /**
+     * @var string
+     */
     private $zip;
 
     /**
@@ -79,6 +84,7 @@ class AresRecord
      * @param null $streetHouseNumber
      * @param null $streetOrientationNumber
      * @param null $town
+     * @param null $area
      * @param null $zip
      */
     public function __construct(
@@ -89,6 +95,7 @@ class AresRecord
         $streetHouseNumber = null,
         $streetOrientationNumber = null,
         $town = null,
+        $area = null,
         $zip = null,
         $stateCode = null
     ) {
@@ -99,6 +106,7 @@ class AresRecord
         $this->streetHouseNumber = !empty($streetHouseNumber) ? $streetHouseNumber : null;
         $this->streetOrientationNumber = !empty($streetOrientationNumber) ? $streetOrientationNumber : null;
         $this->town = $town;
+        $this->area = $area;
         $this->zip = $zip;
         $this->stateCode = $stateCode;
     }
@@ -178,6 +186,14 @@ class AresRecord
     public function getTown()
     {
         return $this->town;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getArea()
+    {
+        return $this->area;
     }
 
     /**
@@ -282,6 +298,14 @@ class AresRecord
     public function setTown($town)
     {
         $this->town = $town;
+    }
+
+    /**
+     * @param string $area
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
     }
 
     /**
