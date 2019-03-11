@@ -70,6 +70,11 @@ class AresRecord
     private $insolvencyRegister;
 
     /**
+     * @var Justice
+     */
+    private $justiceRecord;
+
+    /**
      * @var null|GouteClient
      */
     protected $client;
@@ -229,14 +234,23 @@ class AresRecord
         return $this->client;
     }
 
+    public function getJusticeRecord()
+    {
+        if ($this->justiceRecord !== null) {
+            return $this->justiceRecord;
+        }
+        $client = $this->getClient();
+        $justice = new Justice($client);
+        $this->justiceRecord = $justice->findById($this->companyId);
+        return $this->justiceRecord;
+    }
+
     /**
      * @return array|Person[]
      */
     public function getCompanyPeople()
     {
-        $client = $this->getClient();
-        $justice = new Justice($client);
-        $justiceRecord = $justice->findById($this->companyId);
+        $justiceRecord = $this->getJusticeRecord();
         if ($justiceRecord) {
             return $justiceRecord->getPeople();
         }
@@ -342,8 +356,8 @@ class AresRecord
      */
     public function setRegisters($registers)
     {
-        if (isset($registers[22])) {
-            $this->insolvencyRegister = $registers[22];
+        if (isset($registers[21])) {
+            $this->insolvencyRegister = $registers[21];
         }
     }
 
