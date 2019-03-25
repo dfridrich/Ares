@@ -30,10 +30,21 @@ final class JusticeTest extends PHPUnit_Framework_TestCase
         $people = $justiceRecord->getPeople();
         $this->assertCount(2, $people);
 
-        $this->assertArrayHasKey('Mgr. ROBERT RUNTÁK', $people);
-        $person = $people['Mgr. ROBERT RUNTÁK'];
+        $this->assertArrayHasKey('Mgr. Robert Runták', $people);
+        $person = $people['Mgr. Robert Runták'];
         $this->assertInstanceOf('DateTime', $person->getBirthday());
         $this->assertInternalType('string', $person->getAddress());
+
+        $this->assertFalse($justiceRecord->isInsolvencyRecord());
+        $this->assertFalse($justiceRecord->isExecutionRecord());
+
+        $justiceRecord = $this->justice->findById(28962788);
+        $this->assertFalse($justiceRecord->isInsolvencyRecord());
+        $this->assertTrue($justiceRecord->isExecutionRecord());
+
+        $justiceRecord = $this->justice->findById(26823357);
+        $this->assertTrue($justiceRecord->isInsolvencyRecord());
+        $this->assertFalse($justiceRecord->isExecutionRecord());
     }
 
     public function testNotFoundFindId()

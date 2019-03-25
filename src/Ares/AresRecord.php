@@ -52,7 +52,27 @@ class AresRecord
     /**
      * @var string
      */
+    private $area;
+
+    /**
+     * @var string
+     */
     private $zip;
+
+    /**
+     * @var integer
+     */
+    private $stateCode;
+
+    /**
+     * @var string
+     */
+    private $insolvencyRegister;
+
+    /**
+     * @var Justice
+     */
+    private $justiceRecord;
 
     /**
      * @var null|GouteClient
@@ -69,6 +89,7 @@ class AresRecord
      * @param null $streetHouseNumber
      * @param null $streetOrientationNumber
      * @param null $town
+     * @param null $area
      * @param null $zip
      */
     public function __construct(
@@ -79,7 +100,9 @@ class AresRecord
         $streetHouseNumber = null,
         $streetOrientationNumber = null,
         $town = null,
-        $zip = null
+        $area = null,
+        $zip = null,
+        $stateCode = null
     ) {
         $this->companyId = $companyId;
         $this->taxId = !empty($taxId) ? $taxId : null;
@@ -88,7 +111,9 @@ class AresRecord
         $this->streetHouseNumber = !empty($streetHouseNumber) ? $streetHouseNumber : null;
         $this->streetOrientationNumber = !empty($streetOrientationNumber) ? $streetOrientationNumber : null;
         $this->town = $town;
+        $this->area = $area;
         $this->zip = $zip;
+        $this->stateCode = $stateCode;
     }
 
     /**
@@ -171,6 +196,14 @@ class AresRecord
     /**
      * @return mixed
      */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getZip()
     {
         return $this->zip;
@@ -201,14 +234,23 @@ class AresRecord
         return $this->client;
     }
 
+    public function getJusticeRecord()
+    {
+        if ($this->justiceRecord !== null) {
+            return $this->justiceRecord;
+        }
+        $client = $this->getClient();
+        $justice = new Justice($client);
+        $this->justiceRecord = $justice->findById($this->companyId);
+        return $this->justiceRecord;
+    }
+
     /**
      * @return array|Person[]
      */
     public function getCompanyPeople()
     {
-        $client = $this->getClient();
-        $justice = new Justice($client);
-        $justiceRecord = $justice->findById($this->companyId);
+        $justiceRecord = $this->getJusticeRecord();
         if ($justiceRecord) {
             return $justiceRecord->getPeople();
         }
@@ -273,10 +315,54 @@ class AresRecord
     }
 
     /**
+     * @param string $area
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
+    }
+
+    /**
      * @param string $zip
      */
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStateCode()
+    {
+        return $this->stateCode;
+    }
+
+    /**
+     * @param int $stateCode
+     */
+    public function setStateCode($stateCode)
+    {
+        $this->stateCode = $stateCode;
+    }
+
+    /**
+     * @param string $registers
+     *
+     * N (nebo jiný znak) - není v evidenci
+     * A - platná registrace
+     * Z - zaniklá registrace
+     * E - v pozici č. 22 označuje, že existuje záznam v Insolvenčním rejstříku. Nutno prověřit stav řízení!
+     */
+    public function setRegisters($registers)
+    {
+        if (isset($registers[21])) {
+            $this->insolvencyRegister = $registers[21];
+        }
+    }
+
+    public function getInsolvencyRegister()
+    {
+        return $this->insolvencyRegister;
     }
 }
