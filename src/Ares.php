@@ -309,11 +309,11 @@ class Ares
     }
 
     /**
-     * @param $name
-     * @param null $city
+     * @param string $name
+     * @param null   $city
      *
      * @throws InvalidArgumentException
-     * @throws \Exception
+     * @throws AresException
      *
      * @return array|AresRecord[]|AresRecords
      */
@@ -350,7 +350,7 @@ class Ares
         $data = $aresResponse->children($ns['are']);
         $elements = $data->children($ns['dtt'])->V->S;
 
-        if (!count($elements)) {
+        if (empty($elements)) {
             throw new AresException('Nic nebylo nalezeno.');
         }
 

@@ -52,6 +52,22 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->ares->findByIdentificationNumber('');
     }
 
+    public function testFindByName()
+    {
+        $results = $this->ares->findByName('sever');
+
+        $this->assertGreaterThan(0, count($results));
+    }
+
+    /**
+     * @expectedException \Defr\Ares\AresException
+     * @expectedExceptionMessage Nic nebylo nalezeno.
+     */
+    public function testFindByNameNonExistentName()
+    {
+        $this->ares->findByName('some non-existent company name');
+    }
+
     public function testGetCompanyPeople()
     {
         if ($this->isTravis()) {
@@ -59,8 +75,7 @@ final class AresTest extends PHPUnit_Framework_TestCase
         }
 
         $record = $this->ares->findByIdentificationNumber(27791394);
-        $companyPeople
-            = $record->getCompanyPeople();
+        $companyPeople = $record->getCompanyPeople();
         $this->assertCount(2, $companyPeople);
     }
 
