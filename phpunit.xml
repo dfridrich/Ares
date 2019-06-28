@@ -13,7 +13,7 @@
         </whitelist>
     </filter>
     <testsuites>
-        <testsuite>
+        <testsuite name="Ares Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
