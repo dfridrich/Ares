@@ -114,7 +114,7 @@ class Ares
             return unserialize(file_get_contents($cachedFile));
         }
 
-        $url = $this->wrapUrl(sprintf(self::URL_BAS, $id));
+        $url = $this->composeUrl(sprintf(self::URL_BAS, $id));
 
         try {
             $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
@@ -183,7 +183,7 @@ class Ares
         $id = Lib::toInteger($id);
         $this->ensureIdIsInteger($id);
 
-        $url = $this->wrapUrl(sprintf(self::URL_RES, $id));
+        $url = $this->composeUrl(sprintf(self::URL_RES, $id));
 
         $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
         $cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
@@ -244,7 +244,7 @@ class Ares
         $id = Lib::toInteger($id);
         $this->ensureIdIsInteger($id);
 
-        $url = $this->wrapUrl(sprintf(self::URL_TAX, $id));
+        $url = $this->composeUrl(sprintf(self::URL_TAX, $id));
 
         $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
         $cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
@@ -300,7 +300,7 @@ class Ares
             throw new InvalidArgumentException('Zadejte minimálně 3 znaky pro hledání.');
         }
 
-        $url = $this->wrapUrl(sprintf(
+        $url = $this->composeUrl(sprintf(
             self::URL_FIND,
             urlencode(Lib::stripDiacritics($name)),
             urlencode(Lib::stripDiacritics($city))
@@ -397,7 +397,7 @@ class Ares
      *
      * @return string
      */
-    private function wrapUrl($url)
+    private function composeUrl($url)
     {
         if ($this->balancer) {
             $url = sprintf('%s?url=%s', $this->balancer, urlencode($url));
