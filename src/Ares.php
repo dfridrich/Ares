@@ -99,8 +99,7 @@ class Ares
      */
     public function findByIdentificationNumber($id)
     {
-        $id = Lib::toInteger($id);
-        $this->ensureIdIsInteger($id);
+        $this->checkCompanyId($id);
 
         if (empty($id)) {
             throw new AresException('IČ firmy musí být zadáno.');
@@ -128,8 +127,8 @@ class Ares
                 $data = $aresResponse->children($ns['are']);
                 $elements = $data->children($ns['D'])->VBAS;
 
-                $ico = (int) $elements->ICO;
-                if ($ico !== $id) {
+                $ico = $elements->ICO;
+                if ((string) $ico !== (string) $id) {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
 
@@ -180,8 +179,7 @@ class Ares
      */
     public function findInResById($id)
     {
-        $id = Lib::toInteger($id);
-        $this->ensureIdIsInteger($id);
+        $this->checkCompanyId($id);
 
         $url = $this->composeUrl(sprintf(self::URL_RES, $id));
 
@@ -241,8 +239,7 @@ class Ares
      */
     public function findVatById($id)
     {
-        $id = Lib::toInteger($id);
-        $this->ensureIdIsInteger($id);
+        $this->checkCompanyId($id);
 
         $url = $this->composeUrl(sprintf(self::URL_TAX, $id));
 
@@ -385,9 +382,9 @@ class Ares
     /**
      * @param int $id
      */
-    private function ensureIdIsInteger($id)
+    private function checkCompanyId($id)
     {
-        if (!is_int($id)) {
+        if (!is_numeric($id) || !preg_match('/^\d+$/', $id)) {
             throw new InvalidArgumentException('IČ firmy musí být číslo.');
         }
     }

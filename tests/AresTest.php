@@ -17,39 +17,109 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->ares = new Ares();
     }
 
-    public function testFindByIdentificationNumber()
+    /**
+     * @param $companyId
+     * @param $expectedException
+     * @param $expectedExceptionMessage
+     * @param $expected
+     *
+     * @dataProvider providerTestFindByIdentificationNumber
+     *
+     * @throws Ares\AresException
+     */
+    public function testFindByIdentificationNumber($companyId, $expectedException, $expectedExceptionMessage, $expected)
     {
-        $record = $this->ares->findByIdentificationNumber(73263753);
-        $this->assertSame('Dennis Fridrich', $record->getCompanyName());
-        $this->assertSame('CZ8508095453', $record->getTaxId());
-        $this->assertSame('73263753', $record->getCompanyId());
-        $this->assertEmpty($record->getStreet());
-        $this->assertSame('15', $record->getStreetHouseNumber());
-        $this->assertEmpty($record->getStreetOrientationNumber());
-        $this->assertSame('Petrovice - Obděnice', $record->getTown());
-        $this->assertSame('26255', $record->getZip());
-    }
+        // setup
+        if ($expectedException !== null) {
+            $this->expectException($expectedException);
+        }
+        if ($expectedExceptionMessage !== null) {
+            $this->expectExceptionMessage($expectedExceptionMessage);
+        }
 
-    public function testFindByIdentificationNumberWithLeadingZeros()
-    {
-        $record = $this->ares->findByIdentificationNumber('00006947');
-        $this->assertSame('00006947', $record->getCompanyId());
+        // when
+        $actual = $this->ares->findByIdentificationNumber($companyId);
+
+        // then
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @expectedException \Defr\Ares\AresException
+     * @return array
      */
-    public function testFindByIdentificationNumberException()
+    public function providerTestFindByIdentificationNumber()
     {
-        $this->ares->findByIdentificationNumber('A1234');
-    }
-
-    /**
-     * @expectedException \Defr\Ares\AresException
-     */
-    public function testFindByEmptyStringException()
-    {
-        $this->ares->findByIdentificationNumber('');
+        return [
+            [
+                // integer ID number
+                'companyId'                => 48136450,
+                'expectedException'        => null,
+                'expectedExceptionMessage' => null,
+                'expected'                 => new Ares\AresRecord(
+                    '48136450',
+                    'CZ48136450',
+                    'ČESKÁ NÁRODNÍ BANKA',
+                    'Na příkopě',
+                    '864',
+                    '28',
+                    'Praha 1 - Nové Město',
+                    '11000'
+                ),
+            ],
+            [
+                // string ID number
+                'companyId'                => '48136450',
+                'expectedException'        => null,
+                'expectedExceptionMessage' => null,
+                'expected'                 => new Ares\AresRecord(
+                    '48136450',
+                    'CZ48136450',
+                    'ČESKÁ NÁRODNÍ BANKA',
+                    'Na příkopě',
+                    '864',
+                    '28',
+                    'Praha 1 - Nové Město',
+                    '11000'
+                ),
+            ],
+            [
+                // string ID number with leading zeros
+                'companyId'                => '00006947',
+                'expectedException'        => null,
+                'expectedExceptionMessage' => null,
+                'expected'                 => new Ares\AresRecord(
+                    '00006947',
+                    'CZ00006947',
+                    'Ministerstvo financí',
+                    'Letenská',
+                    '525',
+                    '15',
+                    'Praha 1 - Malá Strana',
+                    '11800'
+                ),
+            ],
+            [
+                // nonsense string ID number with some charaters in it
+                'companyId'                => 'ABC1234',
+                'expectedException'        => \InvalidArgumentException::class,
+                'expectedExceptionMessage' => 'IČ firmy musí být číslo.',
+                'expected'                 => null,
+            ],
+            [
+                // empty string ID number
+                'companyId'                => '',
+                'expectedException'        => \InvalidArgumentException::class,
+                'expectedExceptionMessage' => 'IČ firmy musí být číslo.',
+                'expected'                 => null,
+            ],
+            [
+                // non-existent ID number
+                'companyId'                => '12345678912345',
+                'expectedException'        => \Defr\Ares\AresException::class,
+                'expectedExceptionMessage' => 'IČ firmy nebylo nalezeno.',
+                'expected'                 => null,
+            ],
+        ];
     }
 
     public function testFindByName()
