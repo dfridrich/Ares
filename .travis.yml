@@ -23,7 +23,7 @@ before_script:
   - composer install --no-interaction --prefer-source
 
 script:
-  - phpunit $PHPUNIT_FLAGS
+  - vendor/phpunit/phpunit/phpunit $PHPUNIT_FLAGS
   - if [[ "$CHECK_CS" != "" ]]; then vendor/bin/symplify-cs check src tests; fi
 
 after_script:
