@@ -9,7 +9,8 @@ use Defr\Ares\TaxRecord;
 use InvalidArgumentException;
 
 /**
- * Class Ares.
+ * Class Ares provides a way for retrieving data about business subjects from Czech Business register
+ * (aka Obchodní rejstřík).
  *
  * @author Dennis Fridrich <fridrich.dennis@gmail.com>
  */
@@ -26,21 +27,29 @@ class Ares
     private $cacheStrategy = 'YW';
 
     /**
+     * Path to directory that serves as an local cache for Ares service responses.
+     *
      * @var string
      */
     private $cacheDir = null;
 
     /**
+     * Whether we are running in debug/development environment.
+     *
      * @var bool
      */
     private $debug;
 
     /**
+     * Load balancing domain URL.
+     *
      * @var string
      */
     private $balancer = null;
 
     /**
+     * Stream context options.
+     *
      * @var array
      */
     private $contextOptions = [
@@ -51,13 +60,16 @@ class Ares
     ];
 
     /**
+     * Last called URL.
+     *
      * @var string
      */
     private $lastUrl;
 
     /**
-     * @param null $cacheDir
-     * @param bool $debug
+     * @param string|null $cacheDir
+     * @param bool        $debug
+     * @param string|null $balancer
      */
     public function __construct($cacheDir = null, $debug = false, $balancer = null)
     {
@@ -72,46 +84,9 @@ class Ares
         $this->cacheDir = $cacheDir.'/defr/ares';
         $this->debug = $debug;
 
-        // Create cache dirs if they doesn't exist
         if (!is_dir($this->cacheDir)) {
             mkdir($this->cacheDir, 0777, true);
         }
-    }
-
-    /**
-     * @param string $balancer
-     *
-     * @return $this
-     */
-    public function setBalancer($balancer)
-    {
-        $this->balancer = $balancer;
-
-        return $this;
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return string
-     */
-    private function wrapUrl($url)
-    {
-        if ($this->balancer) {
-            $url = sprintf('%s?url=%s', $this->balancer, urlencode($url));
-        }
-
-        $this->lastUrl = $url;
-
-        return $url;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastUrl()
-    {
-        return $this->lastUrl;
     }
 
     /**
@@ -124,8 +99,7 @@ class Ares
      */
     public function findByIdentificationNumber($id)
     {
-        $id = Lib::toInteger($id);
-        $this->ensureIdIsInteger($id);
+        $this->checkCompanyId($id);
 
         if (empty($id)) {
             throw new AresException('IČ firmy musí být zadáno.');
@@ -139,8 +113,7 @@ class Ares
             return unserialize(file_get_contents($cachedFile));
         }
 
-        // Sestaveni URL
-        $url = $this->wrapUrl(sprintf(self::URL_BAS, $id));
+        $url = $this->composeUrl(sprintf(self::URL_BAS, $id));
 
         try {
             $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
@@ -154,8 +127,8 @@ class Ares
                 $data = $aresResponse->children($ns['are']);
                 $elements = $data->children($ns['D'])->VBAS;
 
-                $ico = (int) $elements->ICO;
-                if ($ico !== $id) {
+                $ico = $elements->ICO;
+                if ((string) $ico !== (string) $id) {
                     throw new AresException('IČ firmy nebylo nalezeno.');
                 }
 
@@ -173,9 +146,9 @@ class Ares
                     $record->setStreetHouseNumber(strval($elements->AA->CD));
                 }
 
-                if (strval($elements->AA->N) === 'Praha') { //Praha
+                if (strval($elements->AA->N) === 'Praha') {
                     $record->setTown(strval($elements->AA->NMC).' - '.strval($elements->AA->NCO));
-                } elseif (strval($elements->AA->NCO) !== strval($elements->AA->N)) { //Ostrava
+                } elseif (strval($elements->AA->NCO) !== strval($elements->AA->N)) {
                     $record->setTown(strval($elements->AA->N).' - '.strval($elements->AA->NCO));
                 } else {
                     $record->setTown(strval($elements->AA->N));
@@ -195,6 +168,8 @@ class Ares
     }
 
     /**
+     * Find subject in RES (Registr ekonomických subjektů)
+     *
      * @param $id
      *
      * @throws InvalidArgumentException
@@ -204,11 +179,9 @@ class Ares
      */
     public function findInResById($id)
     {
-        $id = Lib::toInteger($id);
-        $this->ensureIdIsInteger($id);
+        $this->checkCompanyId($id);
 
-        // Sestaveni URL
-        $url = $this->wrapUrl(sprintf(self::URL_RES, $id));
+        $url = $this->composeUrl(sprintf(self::URL_RES, $id));
 
         $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
         $cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
@@ -255,6 +228,8 @@ class Ares
     }
 
     /**
+     * Find subject's tax ID in OR (Obchodní rejstřík).
+
      * @param $id
      *
      * @throws InvalidArgumentException
@@ -264,12 +239,9 @@ class Ares
      */
     public function findVatById($id)
     {
-        $id = Lib::toInteger($id);
+        $this->checkCompanyId($id);
 
-        $this->ensureIdIsInteger($id);
-
-        // Sestaveni URL
-        $url = $this->wrapUrl(sprintf(self::URL_TAX, $id));
+        $url = $this->composeUrl(sprintf(self::URL_TAX, $id));
 
         $cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
         $cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
@@ -309,8 +281,10 @@ class Ares
     }
 
     /**
-     * @param string $name
-     * @param null   $city
+     * Find subject by its name in OR (Obchodní rejstřík).
+     *
+     * @param string      $name
+     * @param string|null $city
      *
      * @throws InvalidArgumentException
      * @throws AresException
@@ -323,7 +297,7 @@ class Ares
             throw new InvalidArgumentException('Zadejte minimálně 3 znaky pro hledání.');
         }
 
-        $url = $this->wrapUrl(sprintf(
+        $url = $this->composeUrl(sprintf(
             self::URL_FIND,
             urlencode(Lib::stripDiacritics($name)),
             urlencode(Lib::stripDiacritics($city))
@@ -362,7 +336,6 @@ class Ares
                 ($element->dph ? str_replace('dic=', 'CZ', strval($element->p_dph)) : '')
             );
             $record->setCompanyName(strval($element->ojm));
-            //'adresa' => strval($element->jmn));
             $records[] = $record;
         }
         file_put_contents($cachedFile, serialize($records));
@@ -387,12 +360,49 @@ class Ares
     }
 
     /**
+     * @param string $balancer
+     *
+     * @return $this
+     */
+    public function setBalancer($balancer)
+    {
+        $this->balancer = $balancer;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastUrl()
+    {
+        return $this->lastUrl;
+    }
+
+    /**
      * @param int $id
      */
-    private function ensureIdIsInteger($id)
+    private function checkCompanyId($id)
     {
-        if (!is_int($id)) {
+        if (!is_numeric($id) || !preg_match('/^\d+$/', $id)) {
             throw new InvalidArgumentException('IČ firmy musí být číslo.');
         }
     }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    private function composeUrl($url)
+    {
+        if ($this->balancer) {
+            $url = sprintf('%s?url=%s', $this->balancer, urlencode($url));
+        }
+
+        $this->lastUrl = $url;
+
+        return $url;
+    }
+
 }

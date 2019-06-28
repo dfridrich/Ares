@@ -41,6 +41,14 @@ $ares = new Ares();
 $ares->setBalancer('http://some.loadbalancer.domain');
 ```
 
+## Develop
+
+### Running tests suite in local docker environment
+```php
+docker run -v `pwd`:/app -i -t php:7.2-fpm /bin/bash -c "/app/vendor/phpunit/phpunit/phpunit --colors --configuration /app/phpunit.xml /app/tests/"
+```
+
+
 ## Coding standard
 
 ### Check
