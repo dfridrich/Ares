@@ -3,9 +3,7 @@
 namespace Defr\Ares;
 
 use Defr\Justice;
-use Defr\ValueObject\Person;
 use Goutte\Client as GouteClient;
-use GuzzleHttp\Client as GuzzleClient;
 
 /**
  * Class AresRecord.
