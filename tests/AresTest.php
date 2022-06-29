@@ -39,8 +39,6 @@ final class AresTest extends TestCase
         // when
         $actual = $this->ares->findByIdentificationNumber($companyId);
 
-        dump($expected, $actual);
-
         // then
         $this->assertEquals($expected, $actual);
     }
