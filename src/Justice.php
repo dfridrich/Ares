@@ -5,8 +5,7 @@ namespace Defr;
 use Assert\Assertion;
 use Defr\Justice\JusticeRecord;
 use Defr\Justice\SubjectNotFoundException;
-use Defr\Parser\JusticeJednatelPersonParser;
-use Defr\Parser\JusticeSpolecnikPersonParser;
+use Defr\Parser\PersonParser;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -41,11 +40,15 @@ final class Justice
      * @param int $id
      *
      * @throws SubjectNotFoundException
+     * @throws \Assert\AssertionFailedException
      *
      * @return JusticeRecord|false
      */
     public function findById($id)
     {
+
+        $id = is_numeric($id) ? (int)$id : $id;
+
         Assertion::integer((int)$id);
 
         $crawler = $this->client->request('GET', sprintf(self::URL_SUBJECTS, $id));
@@ -57,24 +60,34 @@ final class Justice
 
         $people = [];
 
+        $justice = new JusticeRecord();
+
         $crawler = $this->client->request('GET', $detailUrl);
-        $crawler->filter('.aunp-content .div-table')->each(function (Crawler $table) use (&$people) {
-            $title = $table->filter('.vr-hlavicka')->text();
+        $crawler->filter('.aunp-content .div-table')->each(function (Crawler $table) use (&$people, &$justice) {
+            $title = trim($table->filter('.vr-hlavicka')->text());
 
             try {
-                if ('jednatel:' === $title) {
-                    $person = JusticeJednatelPersonParser::parseFromDomCrawler($table);
-                    $people[$person->getName()] = $person;
-                } elseif ('Společník:' === $title) {
-                    $person = JusticeSpolecnikPersonParser::parseFromDomCrawler($table);
-                    $people[$person->getName()] = $person;
+                if (in_array($title, ['jednatel:', 'Jednatel:', 'Společník:'])) {
+                    $person = PersonParser::parseFromDomCrawler($table);
+                    if ($person !== null && !isset($people[$person->getName()])) {
+                        $people[] = $person;
+                    }
+                }
+
+                if ($justice->isInsolvencyRecord() !== true && $title === 'Údaje o insolvencích:') {
+                    $justice->setInsolvencyRecord(true);
+                }
+                if ($justice->isExecutionRecord() !== true && $title === 'Údaje o exekucích:') {
+                    $justice->setExecutionRecord(true);
                 }
             } catch (\Exception $e) {
                 throw $e;
             }
         });
 
-        return new JusticeRecord($people);
+        $justice->setPeople($people);
+
+        return $justice;
     }
 
     /**
