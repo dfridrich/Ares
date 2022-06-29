@@ -2,74 +2,67 @@
 
 namespace Defr\Parser;
 
-use Defr\Parser\Helper\StringHelper;
 use Defr\ValueObject\Person;
 use Symfony\Component\DomCrawler\Crawler;
+use Throwable;
+use function Symfony\Component\String\s;
 
 final class PersonParser
 {
-    /**
-     * @param Crawler $crawler
-     *
-     * @return Person
-     */
+    public const PARTNER = 'PARTNER';
+
+    public const EXECUTIVE = 'EXECUTIVE';
+
     public static function parseFromDomCrawler(Crawler $crawler)
     {
 
-        $person = $crawler->filter('.div-cell')->each(function (Crawler $node, $i) {
-            $content = StringHelper::removeEmptyLines($node->text());
+        $name = $crawler->filter('.div-cell div div:nth-child(1) span:nth-child(1)')->text();
 
-            $contentItems = explode("\n", $content);
-            $contentItems = array_map('trim', $contentItems);
-
-            if ($i === 0) {
-                if (mb_strpos($contentItems[0], 'ednatel') !== false) {
-                    return ['type' => 'executive'];
-                }
-                return ['type' => 'partner'];
-            }
-
-            if (count($contentItems)) {
-                if (mb_strpos($contentItems[0], ', dat. nar.') !== false) {
-
-                    $name = trim(explode(', dat. nar.', $contentItems[0])[0]);
-
-                    try {
-                        $birthday = DateTimeParser::parseFromCzechDateString($contentItems[1]);
-                        $address = $contentItems[2];
-                    } catch (\Exception $e) {
-                        $birthday = null;
-                    }
-
-                    return ['name' => ucwords(mb_strtolower($name)), 'birthday' => $birthday, 'address' => isset($address) ? $address : ''];
-                }
-
-                foreach ($contentItems as $item) {
-                    if (mb_strpos($item, 'zapsáno') !== false) {
-                        $registered = DateTimeParser::parseFromCzechDateString(mb_substr($item, 8));
-                    }
-                    if (mb_strpos($item, 'vymazáno') !== false) {
-                        $deleted = DateTimeParser::parseFromCzechDateString(mb_substr($item, 9));
-                    }
-                }
-
-                if (isset($registered) && !isset($deleted)) {
-                    return ['registered' => $registered];
-                }
-            }
-
-            return null;
-
-        });
-
-        if (isset($person[2]['birthday']) && isset($person[3]['registered'])) {
-            return new Person($person[2]['name'], $person[2]['birthday'], $person[2]['address'], $person[3]['registered'], $person[0]['type']);
+        try {
+            $birthday = DateTimeParser::parseFromCzechDateString(
+                $crawler->filter('.div-cell div div:nth-child(1) span:nth-child(3)')->text()
+            );
+        } catch (Throwable $exception) {
+            $birthday = null;
         }
 
-        if (isset($person[1]['birthday']) && isset($person[2]['registered'])) {
-            return new Person($person[1]['name'], $person[1]['birthday'], $person[1]['address'], $person[2]['registered'], $person[0]['type']);
+        $address = $crawler->filter('.div-cell div div:nth-child(2) span:nth-child(1)')->text();
+
+        try {
+            $registered = DateTimeParser::parseFromCzechDateString(
+                s($crawler->text())->split(' zapsáno')[1]->trim()->split(' vymazáno')[0]->trim()
+            );
+        } catch (Throwable $exception) {
+            $registered = null;
         }
 
-        return null;
+
+        try {
+            $deleted = DateTimeParser::parseFromCzechDateString(
+                s($crawler->text())->split(' vymazáno')[1]->trim()
+            );
+        } catch (Throwable $exception) {
+            $deleted = null;
+        }
+
+        $typeString = $crawler->filter('.vr-hlavicka')->text();
+        $type = null;
+
+        if (mb_strpos($typeString, 'ednatel') !== false) {
+            $type = self::EXECUTIVE;
+        }
+
+        if (mb_strpos($typeString, 'polečník') !== false) {
+            $type = self::PARTNER;
+        }
+
+        return new Person(
+            $name,
+            $birthday,
+            $address,
+            $registered,
+            $deleted,
+            $type,
+        );
     }
 }

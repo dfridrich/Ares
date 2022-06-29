@@ -247,11 +247,11 @@ class AresRecord
     /**
      * @return array|Person[]
      */
-    public function getCompanyPeople()
+    public function getCompanyPeople($onlyActive = true)
     {
         $justiceRecord = $this->getJusticeRecord();
         if ($justiceRecord) {
-            return $justiceRecord->getPeople();
+            return $justiceRecord->getPeople($onlyActive);
         }
 
         return [];

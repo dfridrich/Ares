@@ -29,8 +29,12 @@ final class JusticeRecord
     /**
      * @return array|Person[]
      */
-    public function getPeople()
+    public function getPeople(bool $onlyActive = true)
     {
+        if($onlyActive) {
+            return array_values(array_filter($this->people, fn (Person $person) => $person->getDeleted() === null));
+        }
+
         return $this->people;
     }
 

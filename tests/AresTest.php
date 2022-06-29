@@ -34,12 +34,7 @@ final class AresTest extends TestCase
         }
         if ($expectedExceptionMessage !== null) {
             $this->expectExceptionMessage($expectedExceptionMessage);
-        $this->assertSame('27', $record->getStateCode());
-        $record = $this->ares->findByIdentificationNumber(48528803);
-        $this->assertSame('Milady Horákové 890/20', $record->getStreetWithNumbers());
-        $record = $this->ares->findByIdentificationNumber(1313410);
-        $this->assertSame('Opatovice 76', $record->getStreetWithNumbers());
-    }
+        }
 
         // when
         $actual = $this->ares->findByIdentificationNumber($companyId);
@@ -67,6 +62,7 @@ final class AresTest extends TestCase
                     '864',
                     '28',
                     'Praha 1 - Nové Město',
+                    null,
                     '11000'
                 ),
             ],
@@ -83,6 +79,7 @@ final class AresTest extends TestCase
                     '864',
                     '28',
                     'Praha 1 - Nové Město',
+                    null,
                     '11000'
                 ),
             ],
@@ -99,20 +96,21 @@ final class AresTest extends TestCase
                     '525',
                     '15',
                     'Praha 1 - Malá Strana',
+                    null,
                     '11800'
                 ),
             ],
             [
                 // nonsense string ID number with some charaters in it
                 'companyId'                => 'ABC1234',
-                'expectedException'        => \InvalidArgumentException::class,
+                'expectedException'        => InvalidArgumentException::class,
                 'expectedExceptionMessage' => 'IČ firmy musí být číslo.',
                 'expected'                 => null,
             ],
             [
                 // empty string ID number
                 'companyId'                => '',
-                'expectedException'        => \InvalidArgumentException::class,
+                'expectedException'        => InvalidArgumentException::class,
                 'expectedExceptionMessage' => 'IČ firmy musí být číslo.',
                 'expected'                 => null,
             ],
@@ -148,7 +146,8 @@ final class AresTest extends TestCase
 
         $record = $this->ares->findByIdentificationNumber(27791394);
         $companyPeople = $record->getCompanyPeople();
-        $this->assertCount(2, $companyPeople);
+
+        $this->assertCount(3, $companyPeople);
     }
 
     public function testBalancer(): void

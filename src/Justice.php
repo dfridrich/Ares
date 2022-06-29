@@ -70,7 +70,7 @@ final class Justice
                 if (in_array($title, ['jednatel:', 'Jednatel:', 'Společník:'])) {
                     $person = PersonParser::parseFromDomCrawler($table);
                     if ($person !== null && !isset($people[$person->getName()])) {
-                        $people[$person->getName()] = $person;
+                        $people[] = $person;
                     }
                 }
 
