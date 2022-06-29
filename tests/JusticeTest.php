@@ -15,10 +15,6 @@ final class JusticeTest extends TestCase
 
     protected function setUp(): void
     {
-        if ($this->isTravis()) {
-            $this->markTestSkipped('Travis cannot connect to Justice.cz');
-        }
-
         $this->justice = new Justice(new Client());
     }
 
@@ -55,15 +51,4 @@ final class JusticeTest extends TestCase
         $this->assertFalse($justiceRecord);
     }
 
-    /**
-     * @return bool
-     */
-    private function isTravis(): bool
-    {
-        if (getenv('TRAVIS_PHP_VERSION')) {
-            return true;
-        }
-
-        return false;
-    }
 }

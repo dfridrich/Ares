@@ -39,6 +39,8 @@ final class AresTest extends TestCase
         // when
         $actual = $this->ares->findByIdentificationNumber($companyId);
 
+        dump($expected, $actual);
+
         // then
         $this->assertEquals($expected, $actual);
     }
@@ -140,10 +142,6 @@ final class AresTest extends TestCase
 
     public function testGetCompanyPeople()
     {
-        if ($this->isTravis()) {
-            $this->markTestSkipped('Travis cannot connect to Justice.cz');
-        }
-
         $record = $this->ares->findByIdentificationNumber(27791394);
         $companyPeople = $record->getCompanyPeople();
 
@@ -167,15 +165,4 @@ final class AresTest extends TestCase
         );
     }
 
-    /**
-     * @return bool
-     */
-    private function isTravis(): bool
-    {
-        if (getenv('TRAVIS_PHP_VERSION')) {
-            return true;
-        }
-
-        return false;
-    }
 }
