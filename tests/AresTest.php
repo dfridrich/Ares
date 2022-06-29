@@ -1,18 +1,17 @@
 <?php
 
-namespace Defr\Ares\Tests;
-
 use Defr\Ares;
-use PHPUnit_Framework_TestCase;
+use Defr\Ares\AresException;
+use PHPUnit\Framework\TestCase;
 
-final class AresTest extends PHPUnit_Framework_TestCase
+final class AresTest extends TestCase
 {
     /**
      * @var Ares
      */
     private $ares;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->ares = new Ares();
     }
@@ -25,9 +24,9 @@ final class AresTest extends PHPUnit_Framework_TestCase
      *
      * @dataProvider providerTestFindByIdentificationNumber
      *
-     * @throws Ares\AresException
+     * @throws AresException
      */
-    public function testFindByIdentificationNumber($companyId, $expectedException, $expectedExceptionMessage, $expected)
+    public function testFindByIdentificationNumber($companyId, $expectedException, $expectedExceptionMessage, $expected): void
     {
         // setup
         if ($expectedException !== null) {
@@ -47,7 +46,7 @@ final class AresTest extends PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function providerTestFindByIdentificationNumber()
+    public function providerTestFindByIdentificationNumber(): array
     {
         return [
             [
@@ -115,26 +114,24 @@ final class AresTest extends PHPUnit_Framework_TestCase
             [
                 // non-existent ID number
                 'companyId'                => '12345678912345',
-                'expectedException'        => \Defr\Ares\AresException::class,
+                'expectedException'        => AresException::class,
                 'expectedExceptionMessage' => 'IČ firmy nebylo nalezeno.',
                 'expected'                 => null,
             ],
         ];
     }
 
-    public function testFindByName()
+    public function testFindByName(): void
     {
         $results = $this->ares->findByName('sever');
 
         $this->assertGreaterThan(0, count($results));
     }
 
-    /**
-     * @expectedException \Defr\Ares\AresException
-     * @expectedExceptionMessage Nic nebylo nalezeno.
-     */
-    public function testFindByNameNonExistentName()
+    public function testFindByNameNonExistentName(): void
     {
+        self::expectException(AresException::class);
+        self::expectExceptionMessage('Nic nebylo nalezeno.');
         $this->ares->findByName('some non-existent company name');
     }
 
@@ -149,13 +146,14 @@ final class AresTest extends PHPUnit_Framework_TestCase
         $this->assertCount(2, $companyPeople);
     }
 
-    public function testBalancer()
+    public function testBalancer(): void
     {
         $ares = new Ares();
         $ares->setBalancer('http://some.loadbalancer.domain');
+        self::expectExceptionMessageMatches('/php_network_getaddresses/');
         try {
             $ares->findByIdentificationNumber(26168685);
-        } catch (Ares\AresException $e) {
+        } catch (AresException $e) {
             throw $e;
         }
         $this->assertEquals(
@@ -168,7 +166,7 @@ final class AresTest extends PHPUnit_Framework_TestCase
     /**
      * @return bool
      */
-    private function isTravis()
+    private function isTravis(): bool
     {
         if (getenv('TRAVIS_PHP_VERSION')) {
             return true;

@@ -116,7 +116,7 @@ class Ares
         $url = $this->composeUrl(sprintf(self::URL_BAS, $id));
 
         try {
-            $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
+            $aresRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $aresRequest);
             }
@@ -192,7 +192,7 @@ class Ares
         }
 
         try {
-            $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
+            $aresRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $aresRequest);
             }
@@ -252,7 +252,7 @@ class Ares
         }
 
         try {
-            $vatRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
+            $vatRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
             if ($this->debug) {
                 file_put_contents($cachedRawFile, $vatRequest);
             }
@@ -311,7 +311,7 @@ class Ares
             return unserialize(file_get_contents($cachedFile));
         }
 
-        $aresRequest = file_get_contents($url, null, stream_context_create($this->contextOptions));
+        $aresRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
         if ($this->debug) {
             file_put_contents($cachedRawFile, $aresRequest);
         }

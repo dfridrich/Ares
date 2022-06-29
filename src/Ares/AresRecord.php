@@ -195,7 +195,6 @@ class AresRecord
     {
         if (!$this->client) {
             $this->client = new GouteClient();
-            $this->client->setClient(new GuzzleClient(['verify' => false]));
         }
 
         return $this->client;

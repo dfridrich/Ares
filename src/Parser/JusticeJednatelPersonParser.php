@@ -15,15 +15,12 @@ final class JusticeJednatelPersonParser
      */
     public static function parseFromDomCrawler(Crawler $crawler)
     {
-        $content = $crawler->filter('.div-cell div div')->text();
-        $content = StringHelper::removeEmptyLines($content);
+        $name = $crawler->filter('.div-cell div div:nth-child(1) span:nth-child(1)')->text();
+        $address = $crawler->filter('.div-cell div div:nth-child(2) span:nth-child(1)')->text();
 
-        $contentItems = explode("\n", $content);
-        $contentItems = array_map('trim', $contentItems);
-        $name = trim(explode(',', $contentItems[0])[0]);
+        $birthday = $crawler->filter('.div-cell div div:nth-child(1) span:nth-child(3)')->text();
+        $birthday = DateTimeParser::parseFromCzechDateString($birthday);
 
-        $birthday = DateTimeParser::parseFromCzechDateString($contentItems[1]);
-
-        return new Person($name, $birthday, $contentItems[2]);
+        return new Person($name, $birthday, $address);
     }
 }

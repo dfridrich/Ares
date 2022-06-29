@@ -46,7 +46,7 @@ final class Justice
      */
     public function findById($id)
     {
-        Assertion::integer($id);
+        Assertion::integer((int)$id);
 
         $crawler = $this->client->request('GET', sprintf(self::URL_SUBJECTS, $id));
         $detailUrl = $this->extractDetailUrlFromCrawler($crawler);
@@ -62,10 +62,10 @@ final class Justice
             $title = $table->filter('.vr-hlavicka')->text();
 
             try {
-                if ('jednatel: ' === $title) {
+                if ('jednatel:' === $title) {
                     $person = JusticeJednatelPersonParser::parseFromDomCrawler($table);
                     $people[$person->getName()] = $person;
-                } elseif ('Společník: ' === $title) {
+                } elseif ('Společník:' === $title) {
                     $person = JusticeSpolecnikPersonParser::parseFromDomCrawler($table);
                     $people[$person->getName()] = $person;
                 }
