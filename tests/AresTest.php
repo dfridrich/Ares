@@ -2,6 +2,7 @@
 
 use Defr\Ares;
 use Defr\Ares\AresException;
+use Defr\Ares\AresRecord;
 use PHPUnit\Framework\TestCase;
 
 final class AresTest extends TestCase
@@ -13,7 +14,7 @@ final class AresTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->ares = new Ares(null,true);
+        $this->ares = new Ares(null, true);
     }
 
     /**
@@ -26,8 +27,12 @@ final class AresTest extends TestCase
      *
      * @throws AresException
      */
-    public function testFindByIdentificationNumber($companyId, $expectedException, $expectedExceptionMessage, $expected): void
-    {
+    public function testFindByIdentificationNumber(
+        $companyId,
+        $expectedException,
+        $expectedExceptionMessage,
+        $expected
+    ): void {
         // setup
         if ($expectedException !== null) {
             $this->expectException($expectedException);
@@ -51,75 +56,100 @@ final class AresTest extends TestCase
         return [
             [
                 // integer ID number
-                'companyId'                => 48136450,
-                'expectedException'        => null,
+                'companyId' => 48136450,
+                'expectedException' => null,
                 'expectedExceptionMessage' => null,
-                'expected'                 => new Ares\AresRecord(
+                'expected' => new AresRecord(
                     '48136450',
                     'CZ48136450',
                     'ČESKÁ NÁRODNÍ BANKA',
                     'Na příkopě',
                     '864',
                     '28',
-                    'Praha 1 - Nové Město',
-                    null,
-                    '11000'
+                    'Praha 1',
+                    'Nové Město',
+                    '11000',
+                    '19',
+                    'N'
                 ),
             ],
             [
                 // string ID number
-                'companyId'                => '48136450',
-                'expectedException'        => null,
+                'companyId' => '48136450',
+                'expectedException' => null,
                 'expectedExceptionMessage' => null,
-                'expected'                 => new Ares\AresRecord(
+                'expected' => new AresRecord(
                     '48136450',
                     'CZ48136450',
                     'ČESKÁ NÁRODNÍ BANKA',
                     'Na příkopě',
                     '864',
                     '28',
-                    'Praha 1 - Nové Město',
-                    null,
-                    '11000'
+                    'Praha 1',
+                    'Nové Město',
+                    '11000',
+                    '19',
+                    'N'
                 ),
             ],
             [
                 // string ID number with leading zeros
-                'companyId'                => '00006947',
-                'expectedException'        => null,
+                'companyId' => '00006947',
+                'expectedException' => null,
                 'expectedExceptionMessage' => null,
-                'expected'                 => new Ares\AresRecord(
+                'expected' => new AresRecord(
                     '00006947',
                     'CZ00006947',
                     'Ministerstvo financí',
                     'Letenská',
                     '525',
                     '15',
-                    'Praha 1 - Malá Strana',
-                    null,
-                    '11800'
+                    'Praha 1',
+                    'Malá Strana',
+                    '11800',
+                    '19',
+                    'N'
+                ),
+            ],
+            [
+                // company in insolvency
+                'companyId' => '45275301',
+                'expectedException' => null,
+                'expectedExceptionMessage' => null,
+                'expected' => new AresRecord(
+                    '45275301',
+                    'CZ45275301',
+                    'MTH Praha a.s.',
+                    'Kandertova',
+                    '1131',
+                    '1a',
+                    'Praha 8',
+                    'Libeň',
+                    '18000',
+                    '19',
+                    'E'
                 ),
             ],
             [
                 // nonsense string ID number with some charaters in it
-                'companyId'                => 'ABC1234',
-                'expectedException'        => InvalidArgumentException::class,
+                'companyId' => 'ABC1234',
+                'expectedException' => InvalidArgumentException::class,
                 'expectedExceptionMessage' => 'IČ firmy musí být číslo.',
-                'expected'                 => null,
+                'expected' => null,
             ],
             [
                 // empty string ID number
-                'companyId'                => '',
-                'expectedException'        => InvalidArgumentException::class,
+                'companyId' => '',
+                'expectedException' => InvalidArgumentException::class,
                 'expectedExceptionMessage' => 'IČ firmy musí být číslo.',
-                'expected'                 => null,
+                'expected' => null,
             ],
             [
                 // non-existent ID number
-                'companyId'                => '12345678912345',
-                'expectedException'        => AresException::class,
+                'companyId' => '12345678912345',
+                'expectedException' => AresException::class,
                 'expectedExceptionMessage' => 'IČ firmy nebylo nalezeno.',
-                'expected'                 => null,
+                'expected' => null,
             ],
         ];
     }
