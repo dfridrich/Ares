@@ -6,6 +6,7 @@ use Defr\Ares\AresException;
 use Defr\Ares\AresRecord;
 use Defr\Ares\AresRecords;
 use Defr\Ares\TaxRecord;
+use Defr\Lib;
 
 
 class AresV1 implements ApiClient
