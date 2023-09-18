@@ -3,6 +3,7 @@
 namespace Defr;
 
 use Defr\Ares\ApiClient\ApiClient;
+use Defr\Ares\ApiClient\AresV1;
 use Defr\Ares\AresException;
 use Defr\Ares\AresRecord;
 use Defr\Ares\AresRecords;
@@ -34,7 +35,7 @@ class Ares
      */
     public function __construct($cacheDir = null, $debug = false, $balancer = null)
     {
-		$this->apiClient = new ApiClient($cacheDir, $debug, $balancer);
+		$this->apiClient = new AresV1($cacheDir, $debug, $balancer);
     }
 
     /**
