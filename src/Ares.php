@@ -2,8 +2,10 @@
 
 namespace Defr;
 
+use DateTimeImmutable;
 use Defr\Ares\ApiClient\ApiClient;
 use Defr\Ares\ApiClient\AresV1;
+use Defr\Ares\ApiClient\AresV2;
 use Defr\Ares\ApiClient\ResponseCache;
 use Defr\Ares\AresException;
 use Defr\Ares\AresRecord;
@@ -30,15 +32,28 @@ class Ares
 	private ApiClient $apiClient;
 
     /**
-     * @param string|null $cacheDir
-     * @param bool        $debug
-     * @param string|null $balancer
-     */
-    public function __construct($cacheDir = null, $debug = false, $balancer = null, ?ApiClient $apiClient = null)
+     * @param string|null    $cacheDir
+     * @param bool           $debug
+     * @param string|null    $balancer
+     * @param ApiClient|null $apiClient
+     * @param bool           $newAresFromOctober not reflected if $apiClient passed
+     * @param bool           $forceNewAres not reflected if $apiClient passed
+	 */
+    public function __construct($cacheDir = null, $debug = false, $balancer = null, ?ApiClient $apiClient = null, bool $newAresFromOctober = true, bool $forceNewAres = false)
     {
-		$this->apiClient = $apiClient !== null
-			? $apiClient
-			: new ResponseCache(new AresV1($balancer), $cacheDir, $debug, $balancer);
+		if ($apiClient !== null) {
+			$this->apiClient = $apiClient;
+			return;
+		}
+
+		// make auto-switch as of October
+		$now = DateTimeImmutable::createFromFormat('U', time());
+		$startOfOctober = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-10-01 00:00:00');
+		$inner = ($newAresFromOctober && $now >= $startOfOctober) || $forceNewAres
+			? new AresV2($balancer)
+			: new AresV1($balancer);
+
+		$this->apiClient = new ResponseCache($inner, $cacheDir, $debug, $balancer);
     }
 
     /**
