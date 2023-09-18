@@ -4,6 +4,7 @@ namespace Defr;
 
 use Defr\Ares\ApiClient\ApiClient;
 use Defr\Ares\ApiClient\AresV1;
+use Defr\Ares\ApiClient\ResponseCache;
 use Defr\Ares\AresException;
 use Defr\Ares\AresRecord;
 use Defr\Ares\AresRecords;
@@ -33,9 +34,11 @@ class Ares
      * @param bool        $debug
      * @param string|null $balancer
      */
-    public function __construct($cacheDir = null, $debug = false, $balancer = null)
+    public function __construct($cacheDir = null, $debug = false, $balancer = null, ?ApiClient $apiClient = null)
     {
-		$this->apiClient = new AresV1($cacheDir, $debug, $balancer);
+		$this->apiClient = $apiClient !== null
+			? $apiClient
+			: new ResponseCache(new AresV1($balancer), $cacheDir, $debug, $balancer);
     }
 
     /**
@@ -139,6 +142,11 @@ class Ares
         return $this;
     }
 
+	public function setApiClient(ApiClient $apiClient): void
+	{
+		$this->apiClient = $apiClient;
+	}
+
     /**
      * @return string
      */
@@ -146,6 +154,11 @@ class Ares
     {
         return $this->apiClient->getLastUrl();
     }
+
+	public function getLastRawResponse(): ?string
+	{
+		return $this->apiClient->getLastRawResponse();
+	}
 
     /**
      * @param mixed $id

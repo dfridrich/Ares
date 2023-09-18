@@ -50,4 +50,6 @@ interface ApiClient
 
 	public function getLastUrl(): string;
 
+	public function getLastRawResponse(): ?string;
+
 }

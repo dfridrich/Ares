@@ -17,18 +17,6 @@ class AresV1 implements ApiClient
 	private const URL_TAX = 'https://wwwinfo.mfcr.cz/cgi-bin/ares/ares_es.cgi?ico=%s&filtr=0';
 	private const URL_FIND = 'https://wwwinfo.mfcr.cz/cgi-bin/ares/ares_es.cgi?obch_jm=%s&obec=%s&filtr=0';
 
-	private string $cacheStrategy = 'YW';
-
-	/**
-	 * Path to directory that serves as an local cache for Ares service responses.
-	 */
-	private ?string $cacheDir = null;
-
-	/**
-	 * Whether we are running in debug/development environment.
-	 */
-	private bool $debug;
-
 	/**
 	 * Load balancing domain URL.
 	 */
@@ -51,21 +39,12 @@ class AresV1 implements ApiClient
 	 */
 	private string $lastUrl;
 
-	public function __construct(?string $cacheDir = null, bool $debug = false, ?string $balancer = null)
-	{
-		if (null === $cacheDir) {
-			$cacheDir = sys_get_temp_dir();
-		}
+	private ?string $lastRawResponse = null;
 
+	public function __construct(?string $balancer = null)
+	{
 		if (null !== $balancer) {
 			$this->balancer = $balancer;
-		}
-
-		$this->cacheDir = $cacheDir.'/defr/ares';
-		$this->debug = $debug;
-
-		if (!is_dir($this->cacheDir)) {
-			mkdir($this->cacheDir, 0777, true);
 		}
 	}
 
@@ -74,21 +53,11 @@ class AresV1 implements ApiClient
 	 */
 	public function findByIdentificationNumber($id): AresRecord
 	{
-		$cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-		$cachedFile = $this->cacheDir.'/bas_'.$cachedFileName;
-		$cachedRawFile = $this->cacheDir.'/bas_raw_'.$cachedFileName;
-
-		if (is_file($cachedFile)) {
-			return unserialize(file_get_contents($cachedFile));
-		}
-
 		$url = $this->composeUrl(sprintf(self::URL_BAS, $id));
 
 		try {
 			$aresRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
-			if ($this->debug) {
-				file_put_contents($cachedRawFile, $aresRequest);
-			}
+			$this->lastRawResponse = $aresRequest;
 			$aresResponse = simplexml_load_string($aresRequest);
 
 			if ($aresResponse) {
@@ -144,8 +113,6 @@ class AresV1 implements ApiClient
 			throw new AresException($e->getMessage());
 		}
 
-		file_put_contents($cachedFile, serialize($record));
-
 		return $record;
 	}
 
@@ -156,19 +123,9 @@ class AresV1 implements ApiClient
 	{
 		$url = $this->composeUrl(sprintf(self::URL_RES, $id));
 
-		$cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-		$cachedFile = $this->cacheDir.'/res_'.$cachedFileName;
-		$cachedRawFile = $this->cacheDir.'/res_raw_'.$cachedFileName;
-
-		if (is_file($cachedFile)) {
-			return unserialize(file_get_contents($cachedFile));
-		}
-
 		try {
 			$aresRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
-			if ($this->debug) {
-				file_put_contents($cachedRawFile, $aresRequest);
-			}
+			$this->lastRawResponse = $aresRequest;
 			$aresResponse = simplexml_load_string($aresRequest);
 
 			if ($aresResponse) {
@@ -195,7 +152,6 @@ class AresV1 implements ApiClient
 		} catch (\Exception $e) {
 			throw new AresException($e->getMessage());
 		}
-		file_put_contents($cachedFile, serialize($record));
 
 		return $record;
 	}
@@ -207,19 +163,9 @@ class AresV1 implements ApiClient
 	{
 		$url = $this->composeUrl(sprintf(self::URL_TAX, $id));
 
-		$cachedFileName = $id.'_'.date($this->cacheStrategy).'.php';
-		$cachedFile = $this->cacheDir.'/tax_'.$cachedFileName;
-		$cachedRawFile = $this->cacheDir.'/tax_raw_'.$cachedFileName;
-
-		if (is_file($cachedFile)) {
-			return unserialize(file_get_contents($cachedFile));
-		}
-
 		try {
 			$vatRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
-			if ($this->debug) {
-				file_put_contents($cachedRawFile, $vatRequest);
-			}
+			$this->lastRawResponse = $vatRequest;
 			$vatResponse = simplexml_load_string($vatRequest);
 
 			if ($vatResponse) {
@@ -239,7 +185,6 @@ class AresV1 implements ApiClient
 		} catch (\Exception $e) {
 			throw new \Exception($e->getMessage());
 		}
-		file_put_contents($cachedFile, serialize($record));
 
 		return $record;
 	}
@@ -255,18 +200,8 @@ class AresV1 implements ApiClient
 			urlencode(Lib::stripDiacritics($city))
 		));
 
-		$cachedFileName = date($this->cacheStrategy).'_'.md5($name.$city).'.php';
-		$cachedFile = $this->cacheDir.'/find_'.$cachedFileName;
-		$cachedRawFile = $this->cacheDir.'/find_raw_'.$cachedFileName;
-
-		if (is_file($cachedFile)) {
-			return unserialize(file_get_contents($cachedFile));
-		}
-
 		$aresRequest = file_get_contents($url, false, stream_context_create($this->contextOptions));
-		if ($this->debug) {
-			file_put_contents($cachedRawFile, $aresRequest);
-		}
+		$this->lastRawResponse = $aresRequest;
 		$aresResponse = simplexml_load_string($aresRequest);
 		if (!$aresResponse) {
 			throw new AresException('Databáze ARES není dostupná.');
@@ -290,7 +225,6 @@ class AresV1 implements ApiClient
 			$record->setCompanyName(strval($element->ojm));
 			$records[] = $record;
 		}
-		file_put_contents($cachedFile, serialize($records));
 
 		return $records;
 	}
@@ -327,6 +261,14 @@ class AresV1 implements ApiClient
 	public function getLastUrl(): string
 	{
 		return $this->lastUrl;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getLastRawResponse(): ?string
+	{
+		return $this->lastRawResponse;
 	}
 
 	private function composeUrl(string $url): string
