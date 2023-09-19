@@ -15,7 +15,7 @@ final class AresTest extends TestCase
     protected function setUp(): void
     {
         $this->ares = new Ares(null, true);
-		$this->ares->setApiClient(new Ares\ApiClient\AresV1()); // skip caching
+		$this->ares->setApiClient(new Ares\ApiClient\AresV2()); // skip caching
     }
 
     /**
