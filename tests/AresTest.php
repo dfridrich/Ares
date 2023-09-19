@@ -15,6 +15,7 @@ final class AresTest extends TestCase
     protected function setUp(): void
     {
         $this->ares = new Ares(null, true);
+		$this->ares->setApiClient(new Ares\ApiClient\AresV2()); // skip caching
     }
 
     /**
@@ -179,6 +180,7 @@ final class AresTest extends TestCase
     public function testBalancer(): void
     {
         $ares = new Ares();
+		$ares->setApiClient(new Ares\ApiClient\AresV1()); // skip caching
         $ares->setBalancer('http://some.loadbalancer.domain');
         self::expectExceptionMessageMatches('/php_network_getaddresses/');
         try {
